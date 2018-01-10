@@ -2,9 +2,9 @@
 RipStation scripts used by the Bentley Historical Library
 
 **Table of Contents**
-  * [Make DIPs (mk-dips)](https://github.com/bentley-historical-library/bhl_ripstation_utils#mk-dir): Make DIPs from the RipStation (AKA Jackie).
+  * [Make DIPs (mk-dips)](https://github.com/bentley-historical-library/bhl_ripstation_utils#mk-dips): Make DIPs from the RipStation (AKA Jackie).
 
-## Make DIPs (mk-dips)
+## mk-dips
 usage: mk-dips.py [-h] --type {data,cd,dvd} --src SRC --dst DST
 
 Make DIPs from the RipStation (AKA Jackie).
