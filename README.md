@@ -1,6 +1,8 @@
 # BHL RipStation (AKA Jackie) Utilities
 RipStation scripts used by the Bentley Historical Library
 
+![RipStation (AKA Jackie)](https://lh6.googleusercontent.com/1xcmHUrp4zAYeWjZuXk0liNkbZZB7jKz0xFvkuDUHSq0ydCT9Ga3sbNIkhFCtdgWrjCsDowgDOyXaDuDs4ey8cTbckZlmipm7kmbd6nTDynFvO9hJSEq74HXgDqbPjckHsp_ivxW)
+
 **Table of Contents**
   * [Make DIPs (mk-dips)](https://github.com/bentley-historical-library/bhl_ripstation_utils#mk-dips): Make DIPs from the RipStation (AKA Jackie).
 
