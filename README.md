@@ -17,3 +17,5 @@ optional arguments:
 | --type {data,cd,dvd} | Pick one: Data CD(s) or DVD(s); audio CD(s); or video-formatted DVD(s) |
 | --src SRC | Input directory |
 | --dst DST | Output directory |
+| --include INCLUDE | Text file with one barcode (to include) per line |
+| --exclude EXCLUDE | Text file with one barcode (to exclude) per line |
