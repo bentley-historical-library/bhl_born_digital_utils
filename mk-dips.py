@@ -21,28 +21,28 @@ elif args.type == 'cd':
     if args.include and not args.exclude:
         with open(os.path.join(args.include), mode="r") as f:
             for barcode in f:
-                include.append(barcode)
+                include.append(barcode.strip())
             
     elif args.exclude and not args.include:
         exclude = []
         with open(os.path.join(args.exclude), mode="r") as f:
             for barcode in f:
-                exclude.append(barcode)
+                exclude.append(barcode.strip())
                 
         for barcode in os.listdir(os.path.join(args.src)):
             if barcode not in exclude:
-                include.append(barcode)
+                include.append(barcode.strip())
                 
     elif args.include and args.exclude:
         exclude = []
         with open(os.path.join(args.exclude), mode="r") as f:
             for barcode in f:
-                exclude.append(barcode)
+                exclude.append(barcode.strip())
     
         with open(os.path.join(args.include), mode="r") as f:
             for barcode in f:
                 if barcode not in exclude:
-                    include.append(barcode)
+                    include.append(barcode.strip())
     
     else:
         for barcode in os.listdir(os.path.join(args.src)):
