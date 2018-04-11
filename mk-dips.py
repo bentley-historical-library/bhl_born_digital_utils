@@ -14,7 +14,7 @@ parser.add_argument('--exclude', help = 'Text file with one barcode (to exclude)
 
 args = parser.parse_args()
 
-elif args.type == 'cd':
+if args.type == 'cd':
  
     include = []
     if args.include and not args.exclude:
