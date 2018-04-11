@@ -4,9 +4,9 @@ import subprocess
 import re
 import sys
 
-parser = argparse.ArgumentParser(description = 'Make DIPs from the RipStation (AKA Jackie).')
+parser = argparse.ArgumentParser(description = 'Make A/V DIPs from the RipStation (AKA Jackie).')
 
-parser.add_argument('--type', choices = ['cd', 'dvd'], required = True, help='Pick one: Data CD(s) or DVD(s); audio CD(s); or video-formatted DVD(s)')
+parser.add_argument('--type', choices = ['cd', 'dvd'], required = True, help='Pick one: audio CD(s) or video-formatted DVD(s)')
 parser.add_argument('--src', required = True, help = 'Input directory')
 parser.add_argument('--dst', required = True, help = 'Output directory')
 parser.add_argument('--include', help = 'Text file with one barcode (to include) per line')
