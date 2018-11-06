@@ -29,6 +29,5 @@ Arguments:
 
 | Argument | Help |
 | --- | --- |
-| -h, --help | show this help message and exit |
 | --src SRC | Input directory |
 | -h, --help | show this help message and exit |
