@@ -39,6 +39,15 @@ Arguments:
 ## check_output_structure
 Check for RipStation output structure.
 
+Usage: check_output_structure.py [-h] --src SRC
+
+Arguments:
+
+| Argument | Help |
+| --- | --- |
+| --src SRC | Target directory |
+| -h, --help | Show this help message and exit |
+
 ## check_thumbs_db_ds_store
 Check and DELETE Thumbs.DB and/or .DS_Store files in a directory.
 
