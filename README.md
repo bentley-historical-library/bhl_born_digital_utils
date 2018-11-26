@@ -3,12 +3,14 @@ RipStation scripts used by the Bentley Historical Library
 
 ![RipStation (AKA Jackie)](https://lh6.googleusercontent.com/1xcmHUrp4zAYeWjZuXk0liNkbZZB7jKz0xFvkuDUHSq0ydCT9Ga3sbNIkhFCtdgWrjCsDowgDOyXaDuDs4ey8cTbckZlmipm7kmbd6nTDynFvO9hJSEq74HXgDqbPjckHsp_ivxW)
 
-**Table of Contents**
-  * check_empty_folder: Check for empty sub-directories and files in a directory.
-  * check_folder_structure: *TBA*
-  * check_missing_folder: Check for missing sub-directories by comparing directory and bhl_inventory.csv
-  * check_thumbs_db_ds_store: Check and DELETE Thumbs.DB and .DS_Store files in a directory.
-  * make_dips: Make DIPs from RipStation audio (.wav) and video (.iso) output.
+## Table of Contents
+  * [check_empty_folder](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_empty_folder): Check for empty sub-directories and files in a directory.
+  * [check_folder_structure](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_folder_structure): Check for RipStation output structure.
+  * [check_missing_folder](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_missing_folder): Check for missing sub-directories by comparing directory and bhl_inventory.csv
+  * [check_thumbs_db_ds_store](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_thumbs_db_ds_store): Check and DELETE Thumbs.DB and .DS_Store files in a directory.
+  * [make_dips](https://github.com/bentley-historical-library/bhl_ripstation_utils#make_dips): Make DIPs from RipStation audio (.wav) and video (.iso) output.
+
+---
 
 ## check_empty_folder
 Check for empty sub-directories and files in a directory.
@@ -23,7 +25,7 @@ Arguments:
 | -h, --help | Show this help message and exit |
 
 ## check_folder_structure
-*TBA*
+Check for RipStation output structure.
 
 ## check_missing_folder
 Check for missing sub-directories by comparing directory and bhl_inventory.csv.
