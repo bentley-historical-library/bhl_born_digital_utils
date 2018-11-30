@@ -6,7 +6,8 @@ parser.add_argument('--src', required=True, help='Target directory')
 args = parser.parse_args()
 
 
-# Check for empty barcode folders (Not recursive)
+# Function
+# Check for empty barcode folders (* Not recursive)
 def check_empty_folder(src_path):
     print('Checking empty folders in', src_path)
     for dirpath, dirnames, files in os.walk(src_path):
@@ -16,9 +17,11 @@ def check_empty_folder(src_path):
 #            else:
 #                print(dirpath + '\\' + dirname, 'has files')
         break
+    print('Done!')
+    print()
 
 
-# Check for empty files in a barcode folder (Not recursive)
+# Check for empty files in a barcode folder (* Not recursive)
 def check_empty_file(src_path):
     directory_list = []
     print('Checking empty files in', src_path)
@@ -35,7 +38,9 @@ def check_empty_file(src_path):
                 if file_size == 0:
                     print('>>>', dirpath + '\\' + file + ' is empty')
         break
+    print('Done!')
 
 
+# Script
 check_empty_folder(args.src)
 check_empty_file(args.src)
