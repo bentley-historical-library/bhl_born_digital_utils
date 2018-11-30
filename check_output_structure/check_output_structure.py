@@ -1,5 +1,3 @@
-# TODO: Check for photos too
-
 import argparse
 import csv
 import os
@@ -10,7 +8,6 @@ args = parser.parse_args()
 
 
 # Function
-# Check audio ODs
 def check_optical_discs(src_path, disc_type):
 
     if disc_type == 'audio CD':
@@ -19,12 +16,27 @@ def check_optical_discs(src_path, disc_type):
         audio_cd_success_list = get_success_target(audio_cd_list)
 
         for row in audio_cd_success_list:
-            # Looking for missing ___
-            # TBA
+            src_bar_path = os.path.join(src_path, row['barcode'])
+
+            audio_sip_count = 0
+            for file in src_bar_path:
+                if file.lower().endswith('.wav'):
+                    audio_sip_count += 1
+
+            audio_dip_exist = os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.wav'))
+
+            # Looking for missing SIPs
+            if audio_sip_count == 1 and audio_dip_exist is True:
+                print('No .wav file(s) for ' + row['barcode'] + '.')
 
             # Looking for missing DIPs
-            if row['made_DIP?'] == 'Y' and os.path.isfile(os.path.join(src_path, row['barcode'], row['barcode'] + '.wav')) is False:
-                print('No DIP!', row['barcode'])
+            if row['made_DIP?'] == 'Y' and audio_dip_exist is False:
+                print('No DIP file for ' + row['barcode'] + '.')
+
+            # Looking for missing bhl_metadata
+            media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
+            if row['took_photo?'] == 'Y' and media_0_exist is False:
+                print('No bhl_metadata file(s) for ' + row['barcode'] + '.')
 
     if disc_type == 'video DVD':
         print('Checking video DVDs...')
@@ -32,13 +44,20 @@ def check_optical_discs(src_path, disc_type):
         video_dvd_success_list = get_success_target(video_dvd_list)
 
         for row in video_dvd_success_list:
-            # Looking for missing ___
-            if os.path.isfile(os.path.join(src_path, row['barcode'], row['barcode'] + '.iso')) is False:
-                print('No ISO!', row['barcode'])
+            src_bar_path = os.path.join(src_path, row['barcode'])
+
+            # Looking for missing SIPs
+            if os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.iso')) is False:
+                print('No .iso file(s) for ' + row['barcode'] + '.')
 
             # Looking for missing DIPs
-            if row['made_DIP?'] == 'Y' and os.path.isfile(os.path.join(src_path, row['barcode'], row['barcode'] + '.mp4')) is False:
-                print('No DIP!', row['barcode'])
+            if row['made_DIP?'] == 'Y' and os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.mp4')) is False:
+                print('No DIP file for ' + row['barcode'] + '.')
+
+            # Looking for missing bhl_metadata
+            media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
+            if row['took_photo?'] == 'Y' and media_0_exist is False:
+                print('No bhl_metadata file(s) for ' + row['barcode'] + '.')
 
     if disc_type == 'data OD':
         print('Checking for data ODs')
@@ -46,13 +65,20 @@ def check_optical_discs(src_path, disc_type):
         data_od_success_list = get_success_target(data_od_list)
 
         for row in data_od_success_list:
+            src_bar_path = os.path.join(src_path, row['barcode'])
+
             # Looking for false audio-rip
-            if os.path.isfile(os.path.join(src_path, row['barcode'], row['barcode'], 'track01.cda')) is True:
-                print(row['barcode'], 'looks like an audio CD to me.')
+            if os.path.isfile(os.path.join(src_bar_path, row['barcode'], 'track01.cda')) is True:
+                print(row['barcode'] + ' looks like an audio CD to me.')
 
             # Looking for false video-rip
-            if os.path.isdir(os.path.join(src_path, row['barcode'], row['barcode'], 'VIDEO_TS')) is True:
-                print(row['barcode'], 'looks like a video DVD to me.')
+            if os.path.isdir(os.path.join(src_bar_path, row['barcode'], 'VIDEO_TS')) is True:
+                print(row['barcode'] + ' looks like a video DVD to me.')
+
+            # Looking for missing bhl_metadata
+            media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
+            if row['took_photo?'] == 'Y' and media_0_exist is False:
+                print('No bhl_metadata file(s) for ' + row['barcode'] + '.')
 
 
 # Parsing targets from bhl_inventory.csv and returning them in a list
@@ -82,6 +108,10 @@ def get_success_target(src_list):
     for row in src_list:
         if row['pass_1_successful?'] == 'Y' or row['pass_2_successful?'] == 'Y':
             return_list.append(row)
+
+    for row in return_list:
+        if row['separation?'] == 'Y':
+            return_list.remove(row)
 
     return return_list
 
