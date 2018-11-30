@@ -12,39 +12,37 @@ args = parser.parse_args()
 
 # Function
 def get_target(src_path, dst_path):
-    tmp_list = []
-    exp_list = []
-    with open(os.path.join(src_path, 'bhl_inventory.csv'), mode='r') as inventory_csv_file:
-        csv_reader = csv.DictReader(inventory_csv_file)
+    temp_list = []
+    return_list = []
+    with open(os.path.join(src_path, 'bhl_inventory.csv'), mode='r') as bhl_inventory_csv_file:
+        csv_reader = csv.DictReader(bhl_inventory_csv_file)
 
         # Removing non-targets, rows that are not audio CD or video DVD
         for row in csv_reader:
             if row['media_type'] == 'audio CD' or row['media_type'] == 'video DVD':
-                tmp_list.append(dict(row))
+                temp_list.append(dict(row))
 
         # Removing non-targets, rows that have DIP made using this script
-        for row in tmp_list:
+        for row in temp_list:
             if row['media_type'] == 'audio CD':
-                if os.path.isfile(os.path.join(dst_path, row['barcode'] + '.wav')) == True:
-                    tmp_list.remove(row)
+                if os.path.isfile(os.path.join(dst_path, row['barcode'] + '.wav')) is True:
+                    temp_list.remove(row)
 
             if row['media_type'] == 'video DVD':
-                if os.path.isfile(os.path.join(dst_path, row['barcode'] + '.mp4')) == True:
-                    tmp_list.remove(row)
+                if os.path.isfile(os.path.join(dst_path, row['barcode'] + '.mp4')) is True:
+                    temp_list.remove(row)
 
         # Adding targets, rows that are successful and have no DIP made
-        for row in tmp_list:
+        for row in temp_list:
             if row['pass_1_successful?'] == 'Y' and row['made_DIP?'] != 'Y':
                 barcode_and_media_type = [row['barcode'], row['media_type']]
-                exp_list.append(barcode_and_media_type)
+                return_list.append(barcode_and_media_type)
 
             if row['pass_1_successful?'] == 'N' and row['pass_2_successful?'] == 'Y' and row['made_DIP?'] != 'Y':
                 barcode_and_media_type = [row['barcode'], row['media_type']]
-                exp_list.append(barcode_and_media_type)
+                return_list.append(barcode_and_media_type)
 
-        return exp_list
-
-# def validate_target:
+        return return_list
 
 
 # Forked from Max's script
