@@ -7,6 +7,10 @@ parser.add_argument('--src', required=True, help='Target directory')
 args = parser.parse_args()
 
 
+# Reference
+# https://stackoverflow.com/questions/34077302/quickly-check-the-integrity-of-video-files-inside-a-directory-with-ffmpeg
+
+
 # Function
 def check_optical_discs(src_path, disc_type):
 
@@ -92,7 +96,7 @@ def get_target(src_path, disc_type):
                 if row['media_type'] == disc_type:
                     return_list.append(dict(row))
 
-        if disc_type is 'data OD':
+        if disc_type == 'data OD':
             for row in csv_reader:
                 if row['media_type'][:4] == disc_type[:4]:
                     return_list.append(dict(row))
