@@ -30,7 +30,7 @@ def check_optical_discs(src_path, disc_type):
             audio_dip_exist = os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.wav'))
 
             # Looking for missing SIPs
-            if audio_sip_count == 1 and audio_dip_exist is True:
+            if audio_sip_count == 0:
                 print('No .wav file(s) for ' + row['barcode'] + '.')
 
             # Looking for missing DIPs
