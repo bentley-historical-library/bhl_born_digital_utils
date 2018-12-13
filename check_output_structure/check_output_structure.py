@@ -1,14 +1,16 @@
 import argparse
 import csv
 import os
+import subprocess
 
 parser = argparse.ArgumentParser(description='Check RipStation output structure')
 parser.add_argument('--src', required=True, help='Target directory')
 args = parser.parse_args()
 
-
-# Reference
-# https://stackoverflow.com/questions/34077302/quickly-check-the-integrity-of-video-files-inside-a-directory-with-ffmpeg
+# Reference for validate_using_ffmpeg()
+# https://superuser.com/questions/100288/how-can-i-check-the-integrity-of-a-video-file-avi-mpeg-mp4
+# https://stackoverflow.com/questions/4117530/sys-argv1-meaning-in-script
+# http://openpreservation.org/blog/2017/01/04/breaking-waves-and-some-flacs/
 
 
 # Function
@@ -34,9 +36,17 @@ def check_optical_discs(src_path, disc_type):
             if audio_file_count == 0:
                 print('No .wav file(s) for ' + row['barcode'] + '.')
 
+            audio_dip_exist = os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.wav'))
+
             # Looking for missing DIPs
             if row['made_DIP?'] == 'Y' and audio_dip_exist is False:
                 print('No DIP file for ' + row['barcode'] + '.')
+
+            # Validating SIPs and DIPs
+            if audio_file_count > 0:
+                for audio_file in audio_file_list:
+                    audio_file_path = os.path.join(src_bar_path, audio_file)
+                    validate_using_ffmpeg(src_path, audio_file, audio_file_path)
 
             # Looking for missing bhl_metadata
             media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
@@ -51,13 +61,23 @@ def check_optical_discs(src_path, disc_type):
         for row in video_dvd_success_list:
             src_bar_path = os.path.join(src_path, row['barcode'])
 
+            video_sip_exist = os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.iso'))
+
             # Looking for missing SIPs
-            if os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.iso')) is False:
+            if video_sip_exist is False:
                 print('No .iso file(s) for ' + row['barcode'] + '.')
 
+            video_dip_exist = os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.mp4'))
+
             # Looking for missing DIPs
-            if row['made_DIP?'] == 'Y' and os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.mp4')) is False:
+            if row['made_DIP?'] == 'Y' and video_dip_exist is False:
                 print('No DIP file for ' + row['barcode'] + '.')
+
+            # Validating DIPs
+            if row['made_DIP?'] == 'Y' and video_dip_exist is True:
+                video_dip = row['barcode'] + '.mp4'
+                video_dip_path = os.path.join(src_bar_path, row['barcode'] + '.mp4')
+                validate_using_ffmpeg(src_path, video_dip, video_dip_path)
 
             # Looking for missing bhl_metadata
             media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
@@ -119,6 +139,27 @@ def get_success_target(src_list):
             return_list.remove(row)
 
     return return_list
+
+
+# Validating media files using ffmpeg -f null method
+def validate_using_ffmpeg(src_path, media, media_path):
+    # print('Validating ' + media)
+    cmd = [
+        os.path.join('ffmpeg', 'bin', 'ffmpeg.exe'),
+        '-loglevel', 'error',
+        '-i', media_path,
+        '-f', 'null', '-',
+        '2>&1',  # https://stackoverflow.com/questions/818255/in-the-shell-what-does-21-mean
+    ]
+
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    output = p.stdout.read().decode('ISO-8859-1')
+
+    if not output:
+        print(media, 'passed ffmpeg validation.')
+    else:
+        print(media, 'failed ffmpeg validation (See below for details):')
+        print(output)
 
 
 # Script
