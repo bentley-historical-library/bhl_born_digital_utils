@@ -78,7 +78,7 @@ def check_optical_discs(src_path, disc_type):
             if row['made_DIP?'] == 'Y' and video_dip_exist is True:
                 video_dip = row['barcode'] + '.mp4'
                 video_dip_path = os.path.join(src_bar_path, row['barcode'] + '.mp4')
-                validate_using_ffmpeg(src_path, video_dip, video_dip_path)
+                validate_using_ffmpeg(video_dip, video_dip_path)
 
             # Looking for missing bhl_metadata
             media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
@@ -132,8 +132,15 @@ def get_target(src_path, disc_type):
 def get_success_target(src_list):
     return_list = []
     for row in src_list:
-        if row['pass_1_successful?'] == 'Y' or row['pass_2_successful?'] == 'Y':
-            return_list.append(row)
+        # For Jackie bhl_inventory
+        if 'pass_1_successful?' in row:
+            if row['pass_1_successful?'] == 'Y' or row['pass_2_successful?'] == 'Y':
+                return_list.append(row)
+
+        # For RMW bhl_inventory
+        if 'pass_successful?' in row:
+            if row['pass_successful?'] == 'Y':
+                return_list.append(row)
 
     for row in return_list:
         if row['separation?'] == 'Y':
@@ -143,7 +150,7 @@ def get_success_target(src_list):
 
 
 # Validating media files using ffmpeg -f null method
-def validate_using_ffmpeg(src_path, media, media_path):
+def validate_using_ffmpeg(media, media_path):
     # print('Validating ' + media)
     cmd = [
         os.path.join('ffmpeg', 'bin', 'ffmpeg.exe'),
