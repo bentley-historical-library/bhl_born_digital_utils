@@ -22,15 +22,16 @@ def check_optical_discs(src_path, disc_type):
         for row in audio_cd_success_list:
             src_bar_path = os.path.join(src_path, row['barcode'])
 
-            audio_sip_count = 0
-            for file in src_bar_path:
-                if file.lower().endswith('.wav'):
-                    audio_sip_count += 1
-
-            audio_dip_exist = os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.wav'))
+            audio_file_count = 0
+            audio_file_list = []
+            for dirpath, dirs, files in os.walk(src_bar_path):
+                for file in files:
+                    if file.lower().endswith('.wav'):
+                        audio_file_count += 1
+                        audio_file_list.append(file)
 
             # Looking for missing SIPs
-            if audio_sip_count == 0:
+            if audio_file_count == 0:
                 print('No .wav file(s) for ' + row['barcode'] + '.')
 
             # Looking for missing DIPs
