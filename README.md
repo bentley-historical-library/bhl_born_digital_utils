@@ -39,6 +39,13 @@ Arguments:
 ## check_output_structure
 Check for RipStation output structure.
 
+Dependency:
+This script uses FFmpeg to create validate .wav and .mp4 files. 
+
+- Download zipped [FFmpeg](https://www.ffmpeg.org/download.html) package.
+- Rename package folders to 'ffmepg'.
+- Place package folders in the same folder with check_output_structure.py.
+
 Usage: check_output_structure.py [-h] --src SRC
 
 Arguments:
@@ -69,7 +76,7 @@ Dependency:
 This script uses FFmpeg and Handbreak CLI to create DIPs. 
 
 - Download zipped [FFmpeg](https://www.ffmpeg.org/download.html) and [Handbreak CLI](https://handbrake.fr/downloads2.php) packages.
-- Rename package folders to 'ffmepg' and 'HandBreakCLI'
+- Rename package folders to 'ffmepg' and 'HandBreakCLI'.
 - Place package folders in the same folder with make_dips.py.
 
 Usage: make_dips.py [-h] --src SRC --dst DST
