@@ -2,6 +2,7 @@ import argparse
 import csv
 import os
 import subprocess
+import time
 
 parser = argparse.ArgumentParser(description='Check RipStation output structure')
 parser.add_argument('--src', required=True, help='Target directory')
@@ -163,8 +164,12 @@ def validate_using_ffmpeg(src_path, media, media_path):
 
 
 # Script
+start_time = time.time()
 check_optical_discs(args.src, 'audio CD')
 print()
 check_optical_discs(args.src, 'video DVD')
 print()
 check_optical_discs(args.src, 'data OD')
+print()
+end_time = time.time()
+print("--- %s seconds ---" % (end_time - start_time))
