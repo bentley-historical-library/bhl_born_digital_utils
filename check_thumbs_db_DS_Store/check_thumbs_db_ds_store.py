@@ -30,9 +30,24 @@ def delete_thumbs_db():
         try:
             os.remove(thumbs_db)
         except OSError:
-            print('Failed deleting "' + thumbs_db + '"')
+            print('Failed to delete "' + thumbs_db + '"')
             pass
     print('Deleting Done!')
+
+
+# Showing search result for Thumbs.db files and confirming user with deleting those files
+def confirm_delete_thumbs_db():
+    if len(thumbs_db_list) != 0:
+        print('Found', len(thumbs_db_list), 'Thumbs.db file(s) in', args.src + '.')
+        while True:
+            decision_input = input('Do you want to delete all Thumbs.db file(s)? (y/n) >>> ').replace(' ', '')
+            if decision_input == 'Y' or decision_input == 'y':
+                delete_thumbs_db()
+            if decision_input == 'N' or decision_input == 'n':
+                pass
+    else:
+        print('Found', len(thumbs_db_list), 'Thumbs.db file in', args.src + '.')
+        print()
 
 
 # Searching for .DS_Store files (* Recursive)
@@ -52,9 +67,23 @@ def delete_ds_store():
         try:
             os.remove(ds_store)
         except OSError:
-            print('Failed deleting "' + ds_store + '"')
+            print('Failed to delete "' + ds_store + '"')
             pass
     print('Deleting Done!')
+
+
+# Showing search result for .DS_Store files and confirming user with deleting those files
+def confirm_delete_ds_store():
+    if len(ds_store_list) != 0:
+        print('Found', len(ds_store_list), '.DS_Store file(s) in', args.src + '.')
+        while True:
+            decision_input = input('Do you want to delete all .DS_Store file(s)? (y/n) >>> ').replace(' ', '')
+            if decision_input == 'Y' or decision_input == 'y':
+                delete_ds_store()
+            if decision_input == 'N' or decision_input == 'n':
+                pass
+    else:
+        print('Found', len(ds_store_list), '.DS_Store file in', args.src + '.')
 
 
 # Script
@@ -63,23 +92,13 @@ ds_store_list = []
 
 if args.t_off is False:
     search_thumbs_db(args.src)
-    if len(thumbs_db_list) != 0:
-        print('Found', len(thumbs_db_list), 'Thumbs.db file(s) in', args.src + '.')
-        delete_thumbs_db()
-        print()
-    else:
-        print('Found', len(thumbs_db_list), 'Thumbs.db file in', args.src + '.')
-        print()
+    confirm_delete_thumbs_db()
 else:
     pass
 
 if args.d_off is False:
     search_ds_store(args.src)
-    if len(ds_store_list) != 0:
-        print('Found', len(ds_store_list), '.DS_Store file(s) in', args.src + '.')
-        delete_ds_store()
-    else:
-        print('Found', len(ds_store_list), '.DS_Store file in', args.src + '.')
+    confirm_delete_ds_store()
 else:
     pass
 
