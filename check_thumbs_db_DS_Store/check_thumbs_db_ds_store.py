@@ -1,5 +1,6 @@
 import argparse
 import os
+from subprocess import call
 
 parser = argparse.ArgumentParser(description='Check Thumbs.db and DS_Store files')
 parser.add_argument('-t_off', action="store_true", default=False, help='Turn off deleting Thumbs.db files')
@@ -28,11 +29,13 @@ def delete_thumbs_db():
     for thumbs_db in thumbs_db_list:
         print('Deleting "' + thumbs_db + '"')
         try:
+            call(["attrib", "-R", "-S", thumbs_db])
             os.remove(thumbs_db)
         except OSError:
             print('Failed to delete "' + thumbs_db + '"')
             pass
     print('Deleting Done!')
+    print()
 
 
 # Showing search result for Thumbs.db files and confirming user with deleting those files
@@ -43,8 +46,10 @@ def confirm_delete_thumbs_db():
             decision_input = input('Do you want to delete all Thumbs.db file(s)? (y/n) >>> ').replace(' ', '')
             if decision_input == 'Y' or decision_input == 'y':
                 delete_thumbs_db()
+                break
             if decision_input == 'N' or decision_input == 'n':
-                pass
+                break
+            print('Please answer y or n.')
     else:
         print('Found', len(thumbs_db_list), 'Thumbs.db file in', args.src + '.')
         print()
@@ -65,11 +70,13 @@ def delete_ds_store():
     for ds_store in ds_store_list:
         print('Deleting "' + ds_store + '"')
         try:
+            call(["attrib", "-R", "-S", ds_store])
             os.remove(ds_store)
         except OSError:
             print('Failed to delete "' + ds_store + '"')
             pass
     print('Deleting Done!')
+    print()
 
 
 # Showing search result for .DS_Store files and confirming user with deleting those files
@@ -80,10 +87,13 @@ def confirm_delete_ds_store():
             decision_input = input('Do you want to delete all .DS_Store file(s)? (y/n) >>> ').replace(' ', '')
             if decision_input == 'Y' or decision_input == 'y':
                 delete_ds_store()
+                break
             if decision_input == 'N' or decision_input == 'n':
-                pass
+                break
+            print('Please answer y or n.')
     else:
         print('Found', len(ds_store_list), '.DS_Store file in', args.src + '.')
+        print()
 
 
 # Script
