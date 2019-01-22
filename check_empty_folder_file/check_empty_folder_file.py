@@ -2,7 +2,7 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser(description='Check empty folders')
-parser.add_argument('--src', required=True, help='Target directory')
+parser.add_argument('-src', required=True, help='Target directory')
 args = parser.parse_args()
 
 

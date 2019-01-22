@@ -5,7 +5,7 @@ from subprocess import call
 parser = argparse.ArgumentParser(description='Check Thumbs.db and DS_Store files')
 parser.add_argument('-t_off', action="store_true", default=False, help='Turn off deleting Thumbs.db files')
 parser.add_argument('-d_off', action="store_true", default=False, help='Turn off deleting .DS_Store files')
-parser.add_argument('--src', required=True, help='Target directory')
+parser.add_argument('-src', required=True, help='Target directory')
 args = parser.parse_args()
 
 # Reference

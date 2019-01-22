@@ -5,8 +5,8 @@ import subprocess
 import re
 
 parser = argparse.ArgumentParser(description='Make A/V DIPs from the RipStation (AKA Jackie).')
-parser.add_argument('--src', required=True, help='Input directory')
-parser.add_argument('--dst', required=True, help='Output directory')
+parser.add_argument('-src', required=True, help='Input directory')
+parser.add_argument('-dst', required=True, help='Output directory')
 args = parser.parse_args()
 
 

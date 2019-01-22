@@ -3,7 +3,7 @@ import csv
 import os
 
 parser = argparse.ArgumentParser(description='Check missing folders')
-parser.add_argument('--src', required=True, help='Target directory')
+parser.add_argument('-src', required=True, help='Target directory')
 args = parser.parse_args()
 
 

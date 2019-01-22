@@ -5,7 +5,7 @@ import subprocess
 import time
 
 parser = argparse.ArgumentParser(description='Check RipStation output structure')
-parser.add_argument('--src', required=True, help='Target directory')
+parser.add_argument('-src', required=True, help='Target directory')
 args = parser.parse_args()
 
 # Reference for validate_using_ffmpeg()
