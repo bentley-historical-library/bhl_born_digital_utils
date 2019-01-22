@@ -162,9 +162,9 @@ def get_input(input_type):
             barcode = input('Barcode? >>> ').replace(' ', '')
             if barcode.isdigit() is False:
                 print('Your barcode is not a number.')
-            if len(barcode) != 12:
-                print('Your barcode is not a 12-digit number.')
-            if barcode.isdigit() is True and len(barcode) == 12:
+            if len(barcode) != 14:
+                print('Your barcode is not a 14-digit number.')
+            if barcode.isdigit() is True and len(barcode) == 14:
                 break
             print('Please try again.')
             print()
