@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 
 from PIL import Image, ImageEnhance
 
@@ -93,7 +94,9 @@ def get_bhl_metadata_image(src_path, rmw_num, barcode):
         counter = 0
         for file in files:
             os.rename(os.path.join(webcam_dir_path, file),
-                      os.path.join(bhl_metadata_dir_path, 'media_' + str(counter) + '.jpg'))
+                      os.path.join(webcam_dir_path, 'media_' + str(counter) + '.jpg'))
+            shutil.move(os.path.join(webcam_dir_path, 'media_' + str(counter) + '.jpg'),
+                        os.path.join(bhl_metadata_dir_path, 'media_' + str(counter) + '.jpg'))
             print('Moved', 'media_' + str(counter) + '.jpg.')
             counter = counter + 1
 
