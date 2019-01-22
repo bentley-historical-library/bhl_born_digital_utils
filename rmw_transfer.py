@@ -4,10 +4,10 @@ import os
 from PIL import Image, ImageEnhance
 
 parser = argparse.ArgumentParser(description='Removable Media Workstation (RMW) transfer')
-parser.add_argument('--metadata_off', action="store_true", default=False, help='Turn off creating bhl_metadata')
-parser.add_argument('--notice_off', action="store_true", default=False, help='Turn off creating bhl_notices')
-parser.add_argument('--src', required=True, help='Accession folder')
-parser.add_argument('--rmw', type=int, choices=range(1, 3), required=True,
+parser.add_argument('-moff', '--metadata_off', action="store_true", default=False, help='Turn off creating bhl_metadata')
+parser.add_argument('-noff', '--notice_off', action="store_true", default=False, help='Turn off creating bhl_notices')
+parser.add_argument('-src', required=True, help='Accession folder')
+parser.add_argument('-rmw', type=int, choices=range(1, 3), required=True,
                     help='Removable Media Workstation (RMW) number')
 args = parser.parse_args()
 
