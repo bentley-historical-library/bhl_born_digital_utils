@@ -2,11 +2,17 @@ import argparse
 import csv
 import os
 import subprocess
+
 import time
 
 parser = argparse.ArgumentParser(description='Check RipStation output structure')
+parser.add_argument('-voff', '--validation_off', action="store_true", default=False,
+                    help='Turn off validating audio CD and video DVD')
 parser.add_argument('-src', required=True, help='Target directory')
 args = parser.parse_args()
+
+# Reference
+# https://stackoverflow.com/questions/33344413/why-is-my-for-loop-skipping-an-element-in-my-list
 
 # Reference for validate_using_ffmpeg()
 # https://superuser.com/questions/100288/how-can-i-check-the-integrity-of-a-video-file-avi-mpeg-mp4
@@ -15,7 +21,7 @@ args = parser.parse_args()
 
 
 # Function
-def check_optical_discs(src_path, disc_type):
+def check_optical_discs(src_path, val_off, disc_type):
 
     if disc_type == 'audio CD':
         print('Checking audio CDs...')
@@ -44,10 +50,10 @@ def check_optical_discs(src_path, disc_type):
                 print('No DIP file for ' + row['barcode'] + '.')
 
             # Validating SIPs and DIPs
-            if audio_file_count > 0:
+            if val_off is False and audio_file_count > 0:
                 for audio_file in audio_file_list:
                     audio_file_path = os.path.join(src_bar_path, audio_file)
-                    validate_using_ffmpeg(src_path, audio_file, audio_file_path)
+                    validate_using_ffmpeg(audio_file, audio_file_path)
 
             # Looking for missing bhl_metadata
             media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
@@ -75,7 +81,7 @@ def check_optical_discs(src_path, disc_type):
                 print('No DIP file for ' + row['barcode'] + '.')
 
             # Validating DIPs
-            if row['made_DIP?'] == 'Y' and video_dip_exist is True:
+            if val_off is False and row['made_DIP?'] == 'Y' and video_dip_exist is True:
                 video_dip = row['barcode'] + '.mp4'
                 video_dip_path = os.path.join(src_bar_path, row['barcode'] + '.mp4')
                 validate_using_ffmpeg(video_dip, video_dip_path)
@@ -94,11 +100,11 @@ def check_optical_discs(src_path, disc_type):
             src_bar_path = os.path.join(src_path, row['barcode'])
 
             # Looking for false audio-rip
-            if os.path.isfile(os.path.join(src_bar_path, row['barcode'], 'track01.cda')) is True:
+            if os.path.isfile(os.path.join(src_bar_path, 'track01.cda')) is True:
                 print(row['barcode'] + ' looks like an audio CD to me.')
 
             # Looking for false video-rip
-            if os.path.isdir(os.path.join(src_bar_path, row['barcode'], 'VIDEO_TS')) is True:
+            if os.path.isdir(os.path.join(src_bar_path, 'VIDEO_TS')) is True:
                 print(row['barcode'] + ' looks like a video DVD to me.')
 
             # Looking for missing bhl_metadata
@@ -130,19 +136,23 @@ def get_target(src_path, disc_type):
 
 # Parsing successful transfers from a list and returning them in a list
 def get_success_target(src_list):
+    temp_list = []
     return_list = []
+
     for row in src_list:
         # For Jackie bhl_inventory
         if 'pass_1_successful?' in row:
             if row['pass_1_successful?'] == 'Y' or row['pass_2_successful?'] == 'Y':
-                return_list.append(row)
+                temp_list.append(row)
 
         # For RMW bhl_inventory
         if 'pass_successful?' in row:
             if row['pass_successful?'] == 'Y':
-                return_list.append(row)
+                temp_list.append(row)
 
-    for row in return_list:
+    return_list = temp_list.copy()
+
+    for row in temp_list:
         if row['separation?'] == 'Y':
             return_list.remove(row)
 
@@ -154,7 +164,7 @@ def validate_using_ffmpeg(media, media_path):
     # print('Validating ' + media)
     cmd = [
         os.path.join('ffmpeg', 'bin', 'ffmpeg.exe'),
-        '-loglevel', 'error',
+        '-loglevel', 'error',   
         '-i', media_path,
         '-f', 'null', '-',
         '2>&1',  # https://stackoverflow.com/questions/818255/in-the-shell-what-does-21-mean
@@ -172,11 +182,11 @@ def validate_using_ffmpeg(media, media_path):
 
 # Script
 start_time = time.time()
-check_optical_discs(args.src, 'audio CD')
+check_optical_discs(args.src, args.validation_off, 'audio CD')
 print()
-check_optical_discs(args.src, 'video DVD')
+check_optical_discs(args.src, args.validation_off, 'video DVD')
 print()
-check_optical_discs(args.src, 'data OD')
+check_optical_discs(args.src, args.validation_off, 'data OD')
 print()
 end_time = time.time()
 print("--- %s seconds ---" % (end_time - start_time))
