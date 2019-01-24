@@ -37,7 +37,7 @@ def confirm_delete_target(target):
         while True:
             decision_input = input('Do you want to delete all ' + target + ' file(s)? (y/n) >>> ').replace(' ', '').lower()
             if decision_input == 'y':
-                delete_target(target)
+                delete_target()
                 print()
                 break
             if decision_input == 'n':
@@ -50,7 +50,7 @@ def confirm_delete_target(target):
 
 
 # Deleting target files (* Recursive)
-def delete_target(target):
+def delete_target():
     for target in target_list:
         print('Deleting', target)
         try:
