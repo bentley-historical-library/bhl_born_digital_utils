@@ -5,9 +5,9 @@ from subprocess import call, DEVNULL
 parser = argparse.ArgumentParser(description='Check Thumbs.db and DS_Store files')
 parser.add_argument('-t', '--thumbsdb_off', action="store_true", default=False,
                     help='Turn off deleting Thumbs.db files')
-parser.add_argument('-d', '--dsstore_off', action="store_true", default=False,
+parser.add_argument('-ds', '--dsstore_off', action="store_true", default=False,
                     help='Turn off deleting .DS_Store files')
-parser.add_argument('-fd', '--desktopdbdf_off', action="store_true", default=False,
+parser.add_argument('-df', '--desktopdbdf_off', action="store_true", default=False,
                     help='Turn off deleting Desktop DB and Desktop DF files')
 parser.add_argument('-src', required=True, help='Target directory')
 args = parser.parse_args()
