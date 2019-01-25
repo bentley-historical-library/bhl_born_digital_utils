@@ -3,7 +3,7 @@ import csv
 import os
 
 parser = argparse.ArgumentParser(description='Check missing folders')
-parser.add_argument('-src', required=True, help='Target directory')
+parser.add_argument('-i', '--input', required=True, help='Input directory')
 args = parser.parse_args()
 
 
@@ -65,8 +65,8 @@ directory_list = []
 missing_list_A = []
 missing_list_B = []
 
-print('Checking missing folders in', args.src)
+print('Checking missing folders in', args.input)
 
-parse_barcodes(args.src)
-parse_directories(args.src)
-compare_lists(args.src)
+parse_barcodes(args.input)
+parse_directories(args.input)
+compare_lists(args.input)

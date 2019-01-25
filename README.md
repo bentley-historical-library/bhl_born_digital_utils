@@ -15,26 +15,26 @@ RipStation scripts used by the Bentley Historical Library
 ## check_empty_folder_file
 Check for empty sub-directories and files in a directory.
 
-Usage: check_empty_folder_file.py [-h] -src SRC
+Usage: check_empty_folder_file.py [-h] -i PATH
 
 Arguments:
 
 | Argument | Help |
 | --- | --- |
-| -src SRC | Target directory |
 | -h, --help | Show this help message and exit |
+| -i PATH, --input | Input directory |
 
 ## check_missing_folder
 Check for missing sub-directories by comparing directory and bhl_inventory.csv.
 
-Usage: check_missing_folder.py [-h] -src SRC
+Usage: check_missing_folder.py [-h] -i PATH
 
 Arguments:
 
 | Argument | Help |
 | --- | --- |
-| -src SRC | Target directory |
 | -h, --help | Show this help message and exit |
+| -i PATH, --input | Input directory |
 
 ## check_output_structure
 Check for RipStation output structure.
@@ -46,30 +46,30 @@ This script uses FFmpeg's -f null method to validate .wav and .mp4 files.
 - Rename package folders to 'ffmepg'.
 - Place package folders in the same folder with check_output_structure.py.
 
-Usage: check_output_structure.py [-voff] [-h] -src SRC
+Usage: check_output_structure.py [-v] [-h] -i PATH
 
 Arguments:
 
 | Argument | Help |
 | --- | --- |
-| -src SRC | Target directory |
-| -voff | Turn off validating .wav and .mp4 files |
+| -v, --validation_off | Turn off validating .wav and .mp4 files |
 | -h, --help | Show this help message and exit |
+| -i PATH, --input | Input directory |
 
-## check_thumbs_db_ds_store
+## check_os_files
 Check and DELETE operating system files, such as Thumbs.db, .DS_store, Desktop DB, Desktop DF, in a directory.
 
-Usage: check_thumbs_db_ds_store.py [-t] [-ds] [-df] [-h] -src SRC
+Usage: check_os_files.py [-b] [-e] [-f] [-h] -i PATH
 
 Arguments:
 
 | Argument | Help |
 | --- | --- |
-| -src SRC | Target directory |
-| -t | Turn off deleting Thumbs.db files |
-| -ds | Turn off deleting .DS_Store files |
-| -df | Turn off deleting Desktop DB and Desktop DF files |
+| -b, --thumbsdb_off | Turn off deleting Thumbs.db files |
+| -e, --dsstore_off | Turn off deleting .DS_Store files |
+| -f, --desktopdbdf_off | Turn off deleting Desktop DB and Desktop DF files |
 | -h, --help | Show this help message and exit |
+| -i INPUT, --input | Input directory |
 
 ## make_dips
 Make dissemination information packages (DIPs) from RipStation audio (.wav) and video (.iso) output. 
@@ -81,12 +81,12 @@ This script uses FFmpeg and Handbreak CLI to create DIPs.
 - Rename package folders to 'ffmepg' and 'HandBreakCLI'.
 - Place package folders in the same folder with make_dips.py.
 
-Usage: make_dips.py [-h] -src SRC -dst DST
+Usage: make_dips.py [-h] -i INPUT -o OUTPUT
 
 Arguments:
 
 | Argument | Help |
 | --- | --- |
-| -src SRC | Input directory |
-| -dst DST | Output directory |
 | -h, --help | show this help message and exit |
+| -i PATH, --input | Input directory |
+| -o PATH, --output | Output directory |

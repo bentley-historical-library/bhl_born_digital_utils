@@ -1,12 +1,12 @@
 import argparse
 import csv
 import os
-import subprocess
 import re
+import subprocess
 
 parser = argparse.ArgumentParser(description='Make A/V DIPs from the RipStation (AKA Jackie).')
-parser.add_argument('-src', required=True, help='Input directory')
-parser.add_argument('-dst', required=True, help='Output directory')
+parser.add_argument('-i', '--input', required=True, help='Input directory')
+parser.add_argument('-o', '--output', required=True, help='Output directory')
 args = parser.parse_args()
 
 
@@ -129,17 +129,17 @@ def mk_mp4(src, barcode, dst):
 
 
 # Script
-target_list = get_target(args.src, args.dst)
+target_list = get_target(args.input, args.output)
 print(target_list)
 result_list = []
 
 for target in target_list:
     if target[1] == 'audio CD':
-        result = mk_wav(args.src, target[0], args.dst)
+        result = mk_wav(args.src, target[0], args.output)
         result_list.append(result)
 
     if target[1] == 'video DVD':
-        result = mk_mp4(args.src, target[0], args.dst)
+        result = mk_mp4(args.src, target[0], args.output)
         result_list.append(result)
 
 for result in result_list:

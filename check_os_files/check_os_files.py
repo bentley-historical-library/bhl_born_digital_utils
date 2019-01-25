@@ -3,13 +3,13 @@ import os
 from subprocess import call, DEVNULL
 
 parser = argparse.ArgumentParser(description='Check Thumbs.db and DS_Store files')
-parser.add_argument('-t', '--thumbsdb_off', action="store_true", default=False,
+parser.add_argument('-b', '--thumbsdb_off', action="store_true", default=False,
                     help='Turn off deleting Thumbs.db files')
-parser.add_argument('-ds', '--dsstore_off', action="store_true", default=False,
+parser.add_argument('-e', '--dsstore_off', action="store_true", default=False,
                     help='Turn off deleting .DS_Store files')
-parser.add_argument('-df', '--desktopdbdf_off', action="store_true", default=False,
+parser.add_argument('-f', '--desktopdbdf_off', action="store_true", default=False,
                     help='Turn off deleting Desktop DB and Desktop DF files')
-parser.add_argument('-src', required=True, help='Target directory')
+parser.add_argument('-i', '--input', required=True, help='Input directory')
 args = parser.parse_args()
 
 # Reference
@@ -31,9 +31,9 @@ def search_target(src_path, target):
 
 
 # Showing search result for target files and confirming user with deleting those files
-def confirm_delete_target(target):
+def confirm_delete_target(src_path, target):
     if len(target_list) != 0:
-        print('Found', len(target_list), target, 'file(s) in', args.src)
+        print('Found', len(target_list), target, 'file(s) in', src_path)
         while True:
             decision_input = input('Do you want to delete all ' + target + ' file(s)? (y/n) >>> ').replace(' ', '').lower()
             if decision_input == 'y':
@@ -45,7 +45,7 @@ def confirm_delete_target(target):
                 break
             print('Please answer in y or n.')
     else:
-        print('Found', len(target_list), target, 'file in', args.src)
+        print('Found', len(target_list), target, 'file in', src_path)
         print()
 
 
@@ -66,15 +66,15 @@ def delete_target():
 target_list = []
 
 if args.thumbsdb_off is False:
-    search_target(args.src, 'Thumbs.db')
-    confirm_delete_target('Thumbs.db')
+    search_target(args.input, 'Thumbs.db')
+    confirm_delete_target(args.input, 'Thumbs.db')
 
 if args.dsstore_off is False:
-    search_target(args.src, '.DS_Store')
-    confirm_delete_target('.DS_Store')
+    search_target(args.input, '.DS_Store')
+    confirm_delete_target(args.input, '.DS_Store')
 
 if args.desktopdbdf_off is False:
-    search_target(args.src, 'Desktop DB')
-    confirm_delete_target('Desktop DB')
-    search_target(args.src, 'Desktop DF')
-    confirm_delete_target('Desktop DF')
+    search_target(args.input, 'Desktop DB')
+    confirm_delete_target(args.input, 'Desktop DB')
+    search_target(args.input, 'Desktop DF')
+    confirm_delete_target(args.input, 'Desktop DF')

@@ -6,9 +6,9 @@ import subprocess
 import time
 
 parser = argparse.ArgumentParser(description='Check RipStation output structure')
-parser.add_argument('-voff', '--validation_off', action="store_true", default=False,
+parser.add_argument('-v', '--validation_off', action="store_true", default=False,
                     help='Turn off validating audio CD and video DVD')
-parser.add_argument('-src', required=True, help='Target directory')
+parser.add_argument('-i', '--input', required=True, help='Input directory')
 args = parser.parse_args()
 
 # Reference
@@ -182,11 +182,11 @@ def validate_using_ffmpeg(media, media_path):
 
 # Script
 start_time = time.time()
-check_optical_discs(args.src, args.validation_off, 'audio CD')
+check_optical_discs(args.input, args.validation_off, 'audio CD')
 print()
-check_optical_discs(args.src, args.validation_off, 'video DVD')
+check_optical_discs(args.input, args.validation_off, 'video DVD')
 print()
-check_optical_discs(args.src, args.validation_off, 'data OD')
+check_optical_discs(args.input, args.validation_off, 'data OD')
 print()
 end_time = time.time()
 print("--- %s seconds ---" % (end_time - start_time))
