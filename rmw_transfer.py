@@ -5,10 +5,10 @@ import shutil
 from PIL import Image, ImageEnhance
 
 parser = argparse.ArgumentParser(description='Removable Media Workstation (RMW) transfer')
-parser.add_argument('-moff', '--metadata_off', action="store_true", default=False, help='Turn off creating bhl_metadata')
-parser.add_argument('-noff', '--notice_off', action="store_true", default=False, help='Turn off creating bhl_notices')
-parser.add_argument('-src', required=True, help='Accession folder')
-parser.add_argument('-rmw', type=int, choices=range(1, 3), required=True,
+parser.add_argument('-m', '--metadata_off', action="store_true", default=False, help='Turn off creating bhl_metadata')
+parser.add_argument('-n', '--notice_off', action="store_true", default=False, help='Turn off creating bhl_notices')
+parser.add_argument('-i', '--input', required=True, help='Accession folder')
+parser.add_argument('--rmw', type=int, choices=range(1, 3), required=True,
                     help='Removable Media Workstation (RMW) number')
 args = parser.parse_args()
 
@@ -177,8 +177,7 @@ def get_input(input_type):
     if input_type == 'delete_webcam_jpg_files':
         while True:
             print('The webcam folder contains JPG files.')
-            print('Do you want to delete all of these images? (y/n/show me)')
-            decision_input = input('>>> ').replace(' ', '').lower()
+            decision_input = input('Do you want to delete all of these images? (y/n/show me) >>> ').replace(' ', '').lower()
             if decision_input == 'y':
                 decision = True
                 break
@@ -209,16 +208,16 @@ def get_input(input_type):
 
 # Script
 while True:
-    barcode = create_barcode_dir(args.src)
+    barcode = create_barcode_dir(args.input)
     print()
 
     if args.metadata_off is False:
-        create_bhl_metadata_dir(args.src, barcode)
-        get_bhl_metadata_image(args.src, args.rmw, barcode)
+        create_bhl_metadata_dir(args.input, barcode)
+        get_bhl_metadata_image(args.input, args.rmw, barcode)
         print()
 
     if args.notice_off is False:
-        create_notice_of_media_removable(args.src, barcode)
+        create_notice_of_media_removable(args.input, barcode)
         print()
 
     decision = get_input('more barcode')
