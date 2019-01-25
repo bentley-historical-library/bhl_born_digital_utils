@@ -69,7 +69,7 @@ Arguments:
 | -e, --dsstore_off | Turn off deleting .DS_Store files |
 | -f, --desktopdbdf_off | Turn off deleting Desktop DB and Desktop DF files |
 | -h, --help | Show this help message and exit |
-| -i INPUT, --input | Input directory |
+| -i PATH, --input | Input directory |
 
 ## make_dips
 Make dissemination information packages (DIPs) from RipStation audio (.wav) and video (.iso) output. 
