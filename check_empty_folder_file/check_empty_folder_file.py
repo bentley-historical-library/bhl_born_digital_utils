@@ -2,7 +2,7 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser(description='Check empty folders')
-parser.add_argument('--src', required=True, help='Target directory')
+parser.add_argument('-i', '--input',required=True, help='Input directory')
 args = parser.parse_args()
 
 
@@ -42,5 +42,5 @@ def check_empty_file(src_path):
 
 
 # Script
-check_empty_folder(args.src)
-check_empty_file(args.src)
+check_empty_folder(args.input)
+check_empty_file(args.input)

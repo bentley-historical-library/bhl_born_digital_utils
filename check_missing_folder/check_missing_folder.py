@@ -3,20 +3,25 @@ import csv
 import os
 
 parser = argparse.ArgumentParser(description='Check missing folders')
-parser.add_argument('--src', required=True, help='Target directory')
+parser.add_argument('-i', '--input', required=True, help='Input directory')
 args = parser.parse_args()
 
 
 # Function
 # Parsing barcodes (with a successful transfer) from bhl_inventory.csv
 def parse_barcodes(src_path):
-    with open(src_path + "\\bhl_inventory.csv", mode='r') as bhl_inventory_csv_file:
+    with open(os.path.join(src_path, 'bhl_inventory.csv'), mode='r') as bhl_inventory_csv_file:
         csv_reader = csv.DictReader(bhl_inventory_csv_file)
         for row in csv_reader:
-            if row['pass_1_successful?'] == 'Y':
-                csv_list.append(row['barcode'].rstrip())
-            if row['pass_2_successful?'] == 'Y':
-                csv_list.append(row['barcode'].rstrip())
+            # For Jackie bhl_inventory
+            if 'pass_1_successful?' in row:
+                if row['pass_1_successful?'] == 'Y' or row['pass_2_successful?'] == 'Y':
+                    csv_list.append(row['barcode'].rstrip())
+
+            # For RMW bhl_inventory
+            if 'pass_successful?' in row:
+                if row['pass_successful?'] == 'Y':
+                    csv_list.append(row['barcode'].rstrip())
 
     print('Found', len(csv_list), 'barcodes in bhl_inventory.csv file.')
 
@@ -60,8 +65,8 @@ directory_list = []
 missing_list_A = []
 missing_list_B = []
 
-print('Checking missing folders in', args.src)
+print('Checking missing folders in', args.input)
 
-parse_barcodes(args.src)
-parse_directories(args.src)
-compare_lists(args.src)
+parse_barcodes(args.input)
+parse_directories(args.input)
+compare_lists(args.input)
