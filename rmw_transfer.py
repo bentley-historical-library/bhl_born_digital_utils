@@ -7,9 +7,9 @@ from PIL import Image, ImageEnhance
 parser = argparse.ArgumentParser(description='Removable Media Workstation (RMW) transfer')
 parser.add_argument('-m', '--metadata_off', action="store_true", default=False, help='Turn off creating bhl_metadata')
 parser.add_argument('-n', '--notice_off', action="store_true", default=False, help='Turn off creating bhl_notices')
-parser.add_argument('-i', '--input', required=True, help='Accession folder')
 parser.add_argument('--rmw', type=int, choices=range(1, 3), required=True,
                     help='Removable Media Workstation (RMW) number')
+parser.add_argument('-i', '--input', required=True, help='Accession folder')
 args = parser.parse_args()
 
 # Reference
@@ -27,6 +27,7 @@ args = parser.parse_args()
 def create_barcode_dir(src_path):
     barcode = get_input('barcode')
 
+    # Checking if barcode directory already exists
     if os.path.isdir(os.path.join(src_path, barcode)) is False:
         try:
             os.mkdir(os.path.join(src_path, barcode))
@@ -42,6 +43,7 @@ def create_barcode_dir(src_path):
 
 
 def create_bhl_metadata_dir(src_path, barcode):
+    # Checking if bhl_metadata directory already exists
     if os.path.isdir(os.path.join(src_path, barcode, 'bhl_metadata')) is False:
         try:
             os.mkdir(os.path.join(src_path, barcode, 'bhl_metadata'))
@@ -58,13 +60,12 @@ def get_bhl_metadata_image(src_path, rmw_num, barcode):
     webcam_dir_path = 'C:\\Users\\' + os.getlogin() + '\\Pictures\\Logitech Webcam'
     bhl_metadata_dir_path = os.path.join(src_path, barcode, 'bhl_metadata')
 
-    # Checking if webcam directory is empty
+    # Checking if webcam directory has old image(s)
     if len(os.listdir(os.path.join(webcam_dir_path))) != 0:
 
-        # Asking
         decision_result = get_input('delete_webcam_jpg_files')
 
-        # Deleting any images from previous session
+        # Deleting images from previous session
         if decision_result is True:
             print('Deleting image files...')
             for dirpath, dirnames, files in os.walk(webcam_dir_path):
@@ -77,7 +78,7 @@ def get_bhl_metadata_image(src_path, rmw_num, barcode):
                         break
             print('Deleting Done!')
 
-        # Keeping
+        # Keeping images from previous session
         if decision_result is False:
             print('Any JPG files in the webcam folder will be included in the bhl_metadata folder.')
             pass
@@ -100,12 +101,12 @@ def get_bhl_metadata_image(src_path, rmw_num, barcode):
             print('Moved', 'media_' + str(counter) + '.jpg.')
             counter = counter + 1
 
-    # Post-processing image(s)
+    # Post-processing image(s) via Pillow
     for dirpath, dirnames, files in os.walk(bhl_metadata_dir_path):
         for file in files:
             thumb_image = Image.open(os.path.join(bhl_metadata_dir_path, file))
 
-            if rmw_num == 1:  # 1920x1080 >> 1067x600 >> 800x600
+            if rmw_num == 1:  # Crop setting for RMW 1, 1920x1080 >> 1067x600 >> 800x600
                 thumb_image = thumb_image.resize((1067, 600)).crop((133, 0, 933, 600))
             if rmw_num == 2:  # 800x600
                 pass
@@ -116,7 +117,7 @@ def get_bhl_metadata_image(src_path, rmw_num, barcode):
 
 
 def create_notice_of_media_removable(src_path, barcode):
-    # Checking
+    # Checking if bhl_notices directory already exists
     if os.path.isdir(os.path.join(src_path, 'bhl_notices')) is False:
         try:
             os.mkdir(os.path.join(src_path, 'bhl_notices'))
@@ -126,7 +127,7 @@ def create_notice_of_media_removable(src_path, barcode):
     else:
         pass
 
-    # Creating
+    # Creating bhl_notice HTML document
     notice_html = open(os.path.join(src_path, 'bhl_notices', barcode + '.html'), mode='w')
     notice_html_temp = '''
     <html>
