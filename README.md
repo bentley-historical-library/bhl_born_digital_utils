@@ -1,18 +1,17 @@
-# BHL RipStation (AKA Jackie) Utilities
-RipStation scripts used by the Bentley Historical Library
+# BHL Ripstation (AKA Jackie) Utilities
+Scripts used for Ripstation transfers at the Bentley Historical Library
 
 ![RipStation (AKA Jackie)](https://lh6.googleusercontent.com/1xcmHUrp4zAYeWjZuXk0liNkbZZB7jKz0xFvkuDUHSq0ydCT9Ga3sbNIkhFCtdgWrjCsDowgDOyXaDuDs4ey8cTbckZlmipm7kmbd6nTDynFvO9hJSEq74HXgDqbPjckHsp_ivxW)
 
 ## Table of Contents
-  * [check_empty_folder file](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_empty_folder_file): Check for empty sub-directories and files in a directory.
-  * [check_missing_folder](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_missing_folder): Check for missing sub-directories by comparing directory and bhl_inventory.csv
-  * [check_output_structure](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_folder_structure): Check for RipStation output structure.
-  * [check_os files](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_os_files): Check and DELETE operating system files in a directory.
-  * [make_dips](https://github.com/bentley-historical-library/bhl_ripstation_utils#make_dips): Make DIPs from RipStation audio (.wav) and video (.iso) output.
+- [check_empty_folder file.py](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_empty_folder_filepy): Check for empty sub-directories and files in a directory.
+- [check_missing_folder.py](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_missing_folderpy): Check for missing sub-directories by comparing directory and bhl_inventory.csv
+- [check_output_structure.py](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_folder_structurepy): Check for RipStation output structure.
+- [check_os files.py](https://github.com/bentley-historical-library/bhl_ripstation_utils#check_os_filespy): Check and DELETE operating system files in a directory.
+- [make_dips.py](https://github.com/bentley-historical-library/bhl_ripstation_utils#make_dipspy): Make DIPs from RipStation audio (.wav) and video (.iso) output.
+- [unhide_folder.py](https://github.com/bentley-historical-library/bhl_ripstation_utils#unhide_folderpy): Unhide hidden sub-directories in a directory.
 
----
-
-## check_empty_folder_file
+## check_empty_folder_file.py
 Check for empty sub-directories and files in a directory.
 
 Usage: check_empty_folder_file.py [-h] -i PATH
@@ -24,7 +23,7 @@ Arguments:
 | -h, --help | Show this help message and exit |
 | -i PATH, --input | Input directory |
 
-## check_missing_folder
+## check_missing_folder.py
 Check for missing sub-directories by comparing directory and bhl_inventory.csv.
 
 Usage: check_missing_folder.py [-h] -i PATH
@@ -36,7 +35,7 @@ Arguments:
 | -h, --help | Show this help message and exit |
 | -i PATH, --input | Input directory |
 
-## check_output_structure
+## check_output_structure.py
 Check for RipStation output structure.
 
 Dependency:
@@ -56,7 +55,7 @@ Arguments:
 | -h, --help | Show this help message and exit |
 | -i PATH, --input | Input directory |
 
-## check_os_files
+## check_os_files.py
 Check and DELETE operating system files, such as Thumbs.db, .DS_store, Desktop DB, Desktop DF, in a directory.
 
 Usage: check_os_files.py [-b] [-e] [-f] [-h] -i PATH
@@ -71,7 +70,7 @@ Arguments:
 | -h, --help | Show this help message and exit |
 | -i PATH, --input | Input directory |
 
-## make_dips
+## make_dips.py
 Make dissemination information packages (DIPs) from RipStation audio (.wav) and video (.iso) output. 
 
 Dependency:
@@ -90,3 +89,15 @@ Arguments:
 | -h, --help | show this help message and exit |
 | -i PATH, --input | Input directory |
 | -o PATH, --output | Output directory |
+
+## unhide_folder.py
+Unhide hidden sub-directories in a directory.
+
+Usage: unhide_folder.py [-h] -i PATH
+
+Arguments:
+
+| Argument | Help |
+| --- | --- |
+| -h, --help | Show this help message and exit |
+| -i PATH, --input | Input directory |
