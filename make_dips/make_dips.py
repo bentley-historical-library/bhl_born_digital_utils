@@ -135,11 +135,11 @@ result_list = []
 
 for target in target_list:
     if target[1] == 'audio CD':
-        result = mk_wav(args.src, target[0], args.output)
+        result = mk_wav(args.input, target[0], args.output)
         result_list.append(result)
 
     if target[1] == 'video DVD':
-        result = mk_mp4(args.src, target[0], args.output)
+        result = mk_mp4(args.input, target[0], args.output)
         result_list.append(result)
 
 for result in result_list:
