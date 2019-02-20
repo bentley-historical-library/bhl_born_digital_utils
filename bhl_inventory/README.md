@@ -2,17 +2,17 @@
 
 A tracking template used for born-digital transfers at the Bentley Historical Library.
 
-##Pre-transfer
+## Pre-transfer
 - accession_num
 - barcode
 - sequence_num
 - physical_loc (Removable Media Dropbox, BHL `_box location_`, NCRC `_box location_`)
 - media_type (5.25'' floppy, 3.5'' floppy, data CD, data DVD, audio CD, video DVD, USB, External HDD)
-- examiner
+- examiner (`_UM uniqname_`)
 - took_photo (Y, N, N/A)
 - printed_notice (Y, N, N/A)
 
-##Transfer
+## Transfer
 - pass_1_successful (Y, N, N/A)
 - pass_1_date (YYYY-MM-DD)
 - pass_2_successful (Y, N, N/A)
@@ -42,7 +42,7 @@ A tracking template used for born-digital transfers at the Bentley Historical Li
 > The "General" note is used to provide additional information about the scope or nature of material and is typically applied at the "File" Level of Description.  General notes should help clarify the contents of a folder (or folders) or highlight content that is not readily apparent from the folder titles.
 - processing_note
 
-##Post-transfer
+## Post-transfer
 - resource_id
 - parent_archival_object_link
 - parent_archival_object_id
