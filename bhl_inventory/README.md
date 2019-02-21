@@ -26,7 +26,7 @@ A tracking template used for born-digital transfers at the Bentley Historical Li
 - separation (Y, N)
 
 ##
-- group title
+- group_title
 - group_num
 - [title](https://sites.google.com/a/umich.edu/bhl-archival-curation/processing-archival-collections/09-description/c-aspace-archival-objects#basic)
 > The "Title" element will be used to describe intellectual entities (such as a Series or Subseries) as well as actual manifestations of archival materials (Instances or Digital Objects).  As such, it should provide researchers and reference staff with a clear and unambiguous idea of the nature and scope of materials. 

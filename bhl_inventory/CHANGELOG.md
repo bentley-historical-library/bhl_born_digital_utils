@@ -4,7 +4,7 @@
 - Added bhl_inventory.csv template for both RMW (Removable Media Workstation) and Ripstation
   - Removed bhl_inventory.csv template for RMW
   - Removed bhl_inventory.csv template for Ripstation
-- Added `group title`, `parent_archival_object_link`, `archival_object_link` column
+- Added `group_title`, `parent_archival_object_link`, `archival_object_link` column
 - Changed `_url` in column names to `_id`
 - Changed examples in bhl_inventory.csv template
 - Removed non-alphabet characters from column names
