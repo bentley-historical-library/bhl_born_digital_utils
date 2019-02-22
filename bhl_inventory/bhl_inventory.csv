@@ -1,0 +1,7 @@
+accession_num,barcode,sequence_num,physical_loc,media_type,examiner,took_photo,printed_notice,pass_1_successful,pass_1_date,pass_2_successful,pass_2_date,contains_virus,contains_pii,made_dip,separation,group_title,group_num,title,date_of_content,access_restrictions,general_note,processing_note,resource_id,parent_archival_object_link,parent_archival_object_id,archival_object_link,archival_object_id,digital_object_id,deepblue_handle,mivideo_id
+123456,RMWEXAMPLE0001,,BHL A-111-Z,data DVD,_UM uniqname_,N,Y,Y,2018-10-08,,,Y,Y,N/A,N,,,"Archive Disc #1 [Bad title, see README]",2016-2018,restrict PR,Includes building photos by Scruffington Photography and staff records containing Farnsworth and other staff members.,,,,,,,,,
+234567,RMWEXAMPLE0002,,Removable Media Dropbox,audio CD,_UM uniqname_,Y,Y,N,2018-10-08,,,N,N,Y,N,,,A Conversation with Philip,undated,reading room,,"Disk imaging failed, captured WAV",,,,,,,,
+,,,,,,,,,,,,,,,,Remembering Seymour,1_0,,2018,open,Includes memorial and slideshow videos from Seymour's funeral.,,,,,,,,,
+345678,RIPEXAMPLE0003,1,NCRC B-222-Z,video DVD,_UM uniqname_,Y,N/A,Y,2018-10-08,,,N,,N,N,Remembering Seymour,1_1,Disc 1 of 2,,,,Unable to transfer 19 image files.,,,,,,,,
+345678,RIPEXAMPLE0004,2,NCRC B-222-Z,video DVD,_UM uniqname_,Y,N/A,N,2018-10-08,Y,2018-10-09,N,,N,N,Remembering Seymour,1_2,Disc 2 of 2,,,,,,,,,,,,
+345678,RIPEXAMPLE0005,3,NCRC B-222-Z,video DVD,_UM uniqname_,N/A,N/A,N/A,,N/A,,N/A,N/A,N/A,Y,Remembering Seymour,1_2,Disc 2 of 2,,,Duplicate of RIPEXAMPLE0004.,,,,,,,,,
