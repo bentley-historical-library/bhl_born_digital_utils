@@ -34,11 +34,11 @@ def get_target(src_path, dst_path):
 
         # Adding targets, rows that are successful and have no DIP made
         for row in temp_list:
-            if row['pass_1_successful?'] == 'Y' and row['made_DIP?'] != 'Y':
+            if row['pass_1_successful'] == 'Y' and row['made_dip'] != 'Y':
                 barcode_and_media_type = [row['barcode'], row['media_type']]
                 return_list.append(barcode_and_media_type)
 
-            if row['pass_1_successful?'] == 'N' and row['pass_2_successful?'] == 'Y' and row['made_DIP?'] != 'Y':
+            if row['pass_1_successful'] == 'N' and row['pass_2_successful'] == 'Y' and row['made_dip'] != 'Y':
                 barcode_and_media_type = [row['barcode'], row['media_type']]
                 return_list.append(barcode_and_media_type)
 

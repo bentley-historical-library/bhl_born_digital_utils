@@ -46,7 +46,7 @@ def check_optical_discs(src_path, val_off, disc_type):
             audio_dip_exist = os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.wav'))
 
             # Looking for missing DIPs
-            if row['made_DIP?'] == 'Y' and audio_dip_exist is False:
+            if row['made_dip'] == 'Y' and audio_dip_exist is False:
                 print('No DIP file for ' + row['barcode'] + '.')
 
             # Validating SIPs and DIPs
@@ -57,7 +57,7 @@ def check_optical_discs(src_path, val_off, disc_type):
 
             # Looking for missing bhl_metadata
             media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
-            if row['took_photo?'] == 'Y' and media_0_exist is False:
+            if row['took_photo'] == 'Y' and media_0_exist is False:
                 print('No bhl_metadata file(s) for ' + row['barcode'] + '.')
 
     if disc_type == 'video DVD':
@@ -77,18 +77,18 @@ def check_optical_discs(src_path, val_off, disc_type):
             video_dip_exist = os.path.isfile(os.path.join(src_bar_path, row['barcode'] + '.mp4'))
 
             # Looking for missing DIPs
-            if row['made_DIP?'] == 'Y' and video_dip_exist is False:
+            if row['made_dip'] == 'Y' and video_dip_exist is False:
                 print('No DIP file for ' + row['barcode'] + '.')
 
             # Validating DIPs
-            if val_off is False and row['made_DIP?'] == 'Y' and video_dip_exist is True:
+            if val_off is False and row['made_dip'] == 'Y' and video_dip_exist is True:
                 video_dip = row['barcode'] + '.mp4'
                 video_dip_path = os.path.join(src_bar_path, row['barcode'] + '.mp4')
                 validate_using_ffmpeg(video_dip, video_dip_path)
 
             # Looking for missing bhl_metadata
             media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
-            if row['took_photo?'] == 'Y' and media_0_exist is False:
+            if row['took_photo'] == 'Y' and media_0_exist is False:
                 print('No bhl_metadata file(s) for ' + row['barcode'] + '.')
 
     if disc_type == 'data OD':
@@ -109,7 +109,7 @@ def check_optical_discs(src_path, val_off, disc_type):
 
             # Looking for missing bhl_metadata
             media_0_exist = os.path.isfile(os.path.join(src_bar_path, 'bhl_metadata', 'media_0.jpg'))
-            if row['took_photo?'] == 'Y' and media_0_exist is False:
+            if row['took_photo'] == 'Y' and media_0_exist is False:
                 print('No bhl_metadata file(s) for ' + row['barcode'] + '.')
 
 
@@ -142,18 +142,18 @@ def get_success_target(src_list):
     for row in src_list:
         # For Jackie bhl_inventory
         if 'pass_1_successful?' in row:
-            if row['pass_1_successful?'] == 'Y' or row['pass_2_successful?'] == 'Y':
+            if row['pass_1_successful'] == 'Y' or row['pass_2_successful'] == 'Y':
                 temp_list.append(row)
 
         # For RMW bhl_inventory
         if 'pass_successful?' in row:
-            if row['pass_successful?'] == 'Y':
+            if row['pass_successful'] == 'Y':
                 temp_list.append(row)
 
     return_list = temp_list.copy()
 
     for row in temp_list:
-        if row['separation?'] == 'Y':
+        if row['separation'] == 'Y':
             return_list.remove(row)
 
     return return_list

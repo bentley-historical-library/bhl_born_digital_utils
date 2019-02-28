@@ -15,12 +15,12 @@ def parse_barcodes(src_path):
         for row in csv_reader:
             # For Jackie bhl_inventory
             if 'pass_1_successful?' in row:
-                if row['pass_1_successful?'] == 'Y' or row['pass_2_successful?'] == 'Y':
+                if row['pass_1_successful'] == 'Y' or row['pass_2_successful'] == 'Y':
                     csv_list.append(row['barcode'].rstrip())
 
             # For RMW bhl_inventory
             if 'pass_successful?' in row:
-                if row['pass_successful?'] == 'Y':
+                if row['pass_successful'] == 'Y':
                     csv_list.append(row['barcode'].rstrip())
 
     print('Found', len(csv_list), 'barcodes in bhl_inventory.csv file.')
