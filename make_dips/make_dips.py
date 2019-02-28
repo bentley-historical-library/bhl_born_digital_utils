@@ -22,8 +22,11 @@ def get_target(src_path, dst_path):
             if row['media_type'] == 'audio CD' or row['media_type'] == 'video DVD':
                 temp_list.append(dict(row))
 
-        # Removing non-targets, rows that have DIP made using this script
+        # Removing non-targets, rows that are separation and have DIP made using this script
         for row in temp_list:
+            if row['separation'] == 'Y':
+                temp_list.remove(row)
+
             if row['media_type'] == 'audio CD':
                 if os.path.isfile(os.path.join(dst_path, row['barcode'] + '.wav')) is True:
                     temp_list.remove(row)
@@ -130,7 +133,6 @@ def mk_mp4(src, barcode, dst):
 
 # Script
 target_list = get_target(args.input, args.output)
-print(target_list)
 result_list = []
 
 for target in target_list:
