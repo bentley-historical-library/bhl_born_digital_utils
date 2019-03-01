@@ -140,14 +140,8 @@ def get_success_target(src_list):
     return_list = []
 
     for row in src_list:
-        # For Jackie bhl_inventory
-        if 'pass_1_successful?' in row:
+        if 'pass_1_successful' in row:
             if row['pass_1_successful'] == 'Y' or row['pass_2_successful'] == 'Y':
-                temp_list.append(row)
-
-        # For RMW bhl_inventory
-        if 'pass_successful?' in row:
-            if row['pass_successful'] == 'Y':
                 temp_list.append(row)
 
     return_list = temp_list.copy()
@@ -161,7 +155,7 @@ def get_success_target(src_list):
 
 # Validating media files using ffmpeg -f null method
 def validate_using_ffmpeg(media, media_path):
-    # print('Validating ' + media)
+    print('Validating ' + media)
     cmd = [
         os.path.join('ffmpeg', 'bin', 'ffmpeg.exe'),
         '-loglevel', 'error',   
