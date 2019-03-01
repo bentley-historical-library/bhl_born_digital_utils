@@ -13,34 +13,38 @@ def parse_barcodes(src_path):
     with open(os.path.join(src_path, 'bhl_inventory.csv'), mode='r') as bhl_inventory_csv_file:
         csv_reader = csv.DictReader(bhl_inventory_csv_file)
         for row in csv_reader:
-            # For Jackie bhl_inventory
-            if 'pass_1_successful?' in row:
+            if row['separation'] == 'Y':
+                csv_fail_list.append(row['barcode'].rstrip(' '))
+            elif row['separation'] == 'N':
                 if row['pass_1_successful'] == 'Y' or row['pass_2_successful'] == 'Y':
-                    csv_list.append(row['barcode'].rstrip())
+                    csv_pass_list.append(row['barcode'].rstrip(' '))
 
-            # For RMW bhl_inventory
-            if 'pass_successful?' in row:
-                if row['pass_successful'] == 'Y':
-                    csv_list.append(row['barcode'].rstrip())
-
-    print('Found', len(csv_list), 'barcodes in bhl_inventory.csv file.')
+    print('Found', len(csv_fail_list) + len(csv_pass_list), 'barcodes,',
+          len(csv_pass_list), 'passed and', len(csv_fail_list), 'failed, barcodes in bhl_inventory.csv file.')
 
 
 # Parsing barcode directories in src
 def parse_directories(src_path):
     for directory in os.listdir(src_path):
         if os.path.isdir(os.path.join(src_path, directory)):
-            directory_list.append(directory.rstrip())
+            if directory.startswith('_'):
+                directory_fail_list.append(directory.lstrip('_').rstrip(' '))
+            else:
+                directory_pass_list.append(directory.rstrip(' '))
 
-    print('Found', len(directory_list), 'folders in', src_path + '.')
+    print('Found', len(directory_fail_list) + len(directory_pass_list), 'folders',
+          len(directory_pass_list), 'passed and', len(directory_fail_list), 'failed, in', src_path + '.')
 
 
 # Cross-comparing two lists
 def compare_lists(src_path):
     # Pass A, do barcodes from csv_list in directory_list?
-    for barcode in csv_list:
-        duplicate_barcode = '_' + barcode
-        if barcode not in directory_list and duplicate_barcode not in directory_list:
+    for barcode in csv_pass_list:
+        if barcode not in directory_pass_list:
+            missing_list_A.append(barcode)
+
+    for barcode in csv_fail_list:
+        if barcode not in directory_fail_list:
             missing_list_A.append(barcode)
 
     print('Found', len(missing_list_A), 'barcodes not in', src_path + '.')
@@ -49,19 +53,25 @@ def compare_lists(src_path):
         print(barcode, "is missing.")
 
     # Pass B, do barcodes from directory_list in csv_list?
-    for barcode in directory_list:
-        if barcode.strip('_') not in csv_list:
+    for barcode in directory_pass_list:
+        if barcode not in csv_pass_list:
+            missing_list_B.append(barcode)
+
+    for barcode in directory_fail_list:
+        if barcode not in csv_fail_list:
             missing_list_B.append(barcode)
 
     print('Found', len(missing_list_B), 'folders not in', 'bhl_inventory.csv.')
 
     for barcode in missing_list_B:
-        print(barcode, "is missing.")
+        print(barcode, 'is missing.')
 
 
 # Script
-csv_list = []
-directory_list = []
+csv_pass_list = []
+csv_fail_list = []
+directory_pass_list = []
+directory_fail_list = []
 missing_list_A = []
 missing_list_B = []
 
