@@ -17,7 +17,7 @@ A tracking template used for born-digital transfers at the Bentley Historical Li
 ## check_empty_folder_file.py
 Check for empty sub-directories and files in a directory.
 
-Usage: check_empty_folder_file.py [-h] -i PATH
+Usage: `check_empty_folder_file.py [-h] -i PATH`
 
 Arguments:
 
@@ -29,7 +29,7 @@ Arguments:
 ## check_missing_folder.py
 Check for missing sub-directories by comparing directory and bhl_inventory.csv.
 
-Usage: check_missing_folder.py [-h] -i PATH
+Usage: `check_missing_folder.py [-h] -i PATH`
 
 Arguments:
 
@@ -48,7 +48,9 @@ This script uses FFmpeg's -f null method to validate .wav and .mp4 files.
 - Rename package folders to 'ffmepg'.
 - Place package folders in the same folder with check_output_structure.py.
 
-Usage: check_output_structure.py [-v] [-h] -i PATH
+Usage:
+- On the command line, navigate (`cd`) to the directory that contains `check_output_structure.py`
+- `check_output_structure.py [-v] [-h] -i PATH`
 
 Arguments:
 
@@ -61,7 +63,7 @@ Arguments:
 ## check_os_files.py
 Check and DELETE operating system files, such as Thumbs.db, .DS_store, Desktop DB, Desktop DF, in a directory.
 
-Usage: check_os_files.py [-b] [-e] [-f] [-h] -i PATH
+Usage: `check_os_files.py [-b] [-e] [-f] [-h] -i PATH`
 
 Arguments:
 
@@ -83,7 +85,9 @@ This script uses FFmpeg and Handbreak CLI to create DIPs.
 - Rename package folders to 'ffmepg' and 'HandBreakCLI'.
 - Place package folders in the same folder with make_dips.py.
 
-Usage: make_dips.py [-h] -i INPUT -o OUTPUT
+Usage:
+- On the command line, navigate (`cd`) to the directory that contains `make_dips.py`
+- `make_dips.py [-h] -i INPUT -o OUTPUT`
 
 Arguments:
 
@@ -101,7 +105,7 @@ Dependency:
 - This script uses [Pillow](https://github.com/python-pillow/Pillow) to adjust images of removable media. 
 - bhl_notice uses [JsBarcode](https://github.com/lindell/JsBarcode) CDN to a render Codabar barcode in the HTML document.  
 
-Usage: rmw_transfer.py [-m] [-n] --rmw NUMBER [-h] -i PATH
+Usage: `rmw_transfer.py [-m] [-n] --rmw NUMBER [-h] -i PATH`
 
 Arguments:
 
@@ -119,7 +123,7 @@ Acknowledgments:
 ## unhide_folder.py
 Unhide hidden sub-directories in a directory.
 
-Usage: unhide_folder.py [-h] -i PATH
+Usage: `unhide_folder.py [-h] -i PATH`
 
 Arguments:
 

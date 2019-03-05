@@ -22,8 +22,11 @@ def get_target(src_path, dst_path):
             if row['media_type'] == 'audio CD' or row['media_type'] == 'video DVD':
                 temp_list.append(dict(row))
 
-        # Removing non-targets, rows that have DIP made using this script
+        # Removing non-targets, rows that are separation and have DIP made using this script
         for row in temp_list:
+            if row['separation'] == 'Y':
+                temp_list.remove(row)
+
             if row['media_type'] == 'audio CD':
                 if os.path.isfile(os.path.join(dst_path, row['barcode'] + '.wav')) is True:
                     temp_list.remove(row)
@@ -34,11 +37,11 @@ def get_target(src_path, dst_path):
 
         # Adding targets, rows that are successful and have no DIP made
         for row in temp_list:
-            if row['pass_1_successful?'] == 'Y' and row['made_DIP?'] != 'Y':
+            if row['pass_1_successful'] == 'Y' and row['made_dip'] != 'Y':
                 barcode_and_media_type = [row['barcode'], row['media_type']]
                 return_list.append(barcode_and_media_type)
 
-            if row['pass_1_successful?'] == 'N' and row['pass_2_successful?'] == 'Y' and row['made_DIP?'] != 'Y':
+            if row['pass_1_successful'] == 'N' and row['pass_2_successful'] == 'Y' and row['made_dip'] != 'Y':
                 barcode_and_media_type = [row['barcode'], row['media_type']]
                 return_list.append(barcode_and_media_type)
 
@@ -130,7 +133,6 @@ def mk_mp4(src, barcode, dst):
 
 # Script
 target_list = get_target(args.input, args.output)
-print(target_list)
 result_list = []
 
 for target in target_list:
