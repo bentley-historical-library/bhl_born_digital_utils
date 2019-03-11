@@ -37,7 +37,7 @@ def check_empty_file(src_path):
                 file_size = os.path.getsize(file_path)
                 if file_size == 0:
                     print('>>>', dirpath + '\\' + file + ' is empty')
-        break
+            break
     print('Done!')
 
 
