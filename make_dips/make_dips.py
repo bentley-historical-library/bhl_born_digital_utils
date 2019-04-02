@@ -72,7 +72,7 @@ def mk_wav(src, barcode, dst):
     # deleting temporary input text file
     os.remove(os.path.join(src, barcode, 'mylist.txt'))
 
-    return [barcode, exit_code]
+    result_list.append([barcode, exit_code])
 
 
 # Forked from Max's script
@@ -97,7 +97,7 @@ def mk_mp4(src, barcode, dst):
             if match:
                 title_count = int(match[0])
 
-            # make mp4 for barcode
+            # make mp4 for single-title DVD
             if title_count == 1:
                 print('\nMaking .MP4 for ' + barcode)
 
@@ -109,11 +109,12 @@ def mk_mp4(src, barcode, dst):
                 ]
                 exit_code = subprocess.call(cmd)
 
-                return [barcode, exit_code]
+                result_list.append([barcode, exit_code])
 
-            # make mp4 for each title in barcode
+            # make mp4 for each title in multi-title DVD
             else:
                 count = 1
+
                 while count <= title_count:
                     print('\nMaking .MP4 for title ' + str(count) + ' of ' + str(title_count))
 
@@ -125,10 +126,9 @@ def mk_mp4(src, barcode, dst):
                         '-o', os.path.join(dst, os.path.splitext(name)[0] + '-' + str(count) + '.mp4')
                     ]
                     exit_code = subprocess.call(cmd)
+                    result_list.append([barcode + '-' + str(count), exit_code])
 
                     count += 1
-
-                return [barcode, exit_code]
 
 
 # Script
@@ -137,12 +137,10 @@ result_list = []
 
 for target in target_list:
     if target[1] == 'audio CD':
-        result = mk_wav(args.input, target[0], args.output)
-        result_list.append(result)
+        mk_wav(args.input, target[0], args.output)
 
     if target[1] == 'video DVD':
-        result = mk_mp4(args.input, target[0], args.output)
-        result_list.append(result)
+        mk_mp4(args.input, target[0], args.output)
 
 for result in result_list:
     if result[1] == 0:
