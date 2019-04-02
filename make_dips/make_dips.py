@@ -128,7 +128,7 @@ def mk_mp4(src, barcode, dst):
 
                     count += 1
 
-                    return [barcode, exit_code]
+                return [barcode, exit_code]
 
 
 # Script
