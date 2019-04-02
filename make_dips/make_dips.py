@@ -16,6 +16,7 @@ def get_target(src_path, dst_path):
     return_list = []
     with open(os.path.join(src_path, 'bhl_inventory.csv'), mode='r') as bhl_inventory_csv_file:
         csv_reader = csv.DictReader(bhl_inventory_csv_file)
+        csv_reader.fieldnames = [fieldname.strip().lower() for fieldname in csv_reader.fieldnames]
 
         # Removing non-targets, rows that are not audio CD or video DVD
         for row in csv_reader:

@@ -118,6 +118,7 @@ def get_target(src_path, disc_type):
     return_list = []
     with open(os.path.join(src_path, 'bhl_inventory.csv'), mode='r') as bhl_inventory_csv_file:
         csv_reader = csv.DictReader(bhl_inventory_csv_file)
+        csv_reader.fieldnames = [fieldname.strip().lower() for fieldname in csv_reader.fieldnames]
 
         if disc_type == 'audio CD' or disc_type == 'video DVD':
             for row in csv_reader:
