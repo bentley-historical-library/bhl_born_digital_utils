@@ -12,6 +12,8 @@ args = parser.parse_args()
 def parse_barcodes(src_path):
     with open(os.path.join(src_path, 'bhl_inventory.csv'), mode='r') as bhl_inventory_csv_file:
         csv_reader = csv.DictReader(bhl_inventory_csv_file)
+        csv_reader.fieldnames = [fieldname.strip().lower() for fieldname in csv_reader.fieldnames]
+
         for row in csv_reader:
             if row['separation'] == 'Y':
                 csv_fail_list.append(row['barcode'].rstrip(' '))
