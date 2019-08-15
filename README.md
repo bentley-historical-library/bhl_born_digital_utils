@@ -9,6 +9,7 @@ Scripts and templates used for born-digital transfers at the Bentley Historical 
 - [check_os files.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#check_os_filespy): Check and delete operating system files in a directory.
 - [make_dips.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#make_dipspy): Make DIPs from RipStation audio (.wav) and video (.iso) output.
 - [rmw_transfer.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#rmw_transferpy): Create a barcode directory, including bhl_metadata folder and bhl_notice file, in a accession directory.
+- [robocopy.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#robocopypy): Used to copy newly transferred content to the digital archive.
 - [unhide_folder.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#unhide_folderpy): Unhide hidden sub-directories in a directory.
 
 ## bhl_inventory.csv
