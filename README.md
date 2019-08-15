@@ -122,7 +122,7 @@ Acknowledgments:
 - rmw_transfer.py is developed based on CollectionSetup.exe by [Matt Adair](mailto:mladair@umich.edu).
 
 ## robocopy.py
-This is used to copy subdirectories listed in a folder using Windows 7 "robocopy" from the command line. A new folder must be created in the destination location prior to running this script. The log will be located inside of the newly created folder.
+This is used to copy subdirectories listed in a folder using Windows 7 "robocopy" from the command line. A new folder must be created in the output directory prior to running this script. The log will be a text file located inside of the newly created folder.
 
 Usage: `robocopy.py [-h] -i INPUT -o OUTPUT`
 
