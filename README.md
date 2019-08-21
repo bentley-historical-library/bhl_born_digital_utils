@@ -8,7 +8,10 @@ Scripts and templates used for born-digital transfers at the Bentley Historical 
 - [check_output_structure.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#check_folder_structurepy): Check for RipStation output structure.
 - [check_os files.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#check_os_filespy): Check and delete operating system files in a directory.
 - [make_dips.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#make_dipspy): Make DIPs from RipStation audio (.wav) and video (.iso) output.
+- [optical_types.py](https://github.com/bentley-historical-library/bhl_born_digital_utilss#optical_typespy): Sort optical disc types listed in a csv inventory and robocopy content from filtered optical discs.
 - [rmw_transfer.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#rmw_transferpy): Create a barcode directory, including bhl_metadata folder and bhl_notice file, in a accession directory.
+- [robocopy.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#robocopypy): Used to copy newly transferred content to the digital archive.
+- [runbe.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#runbepy): Run bulk extractor from the command line.
 - [unhide_folder.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#unhide_folderpy): Unhide hidden sub-directories in a directory.
 
 ## bhl_inventory.csv
@@ -97,6 +100,20 @@ Arguments:
 | -i PATH, --input | Input directory |
 | -o PATH, --output | Output directory |
 
+## optical_types.py
+This is used to filter inventoried barcodes by the optical disc type listed in a CSV file inventory and robocopy selected folders and corresponding content to a temporary folder. Specifically, inventoried barcodes with optical disc types listed as 'audio CD' or 'video DVD' will not be robocopied to a new directory because Bulk Extractor does not accurately scan for PII with those files. In addition, inventoried barcodes marked for separation will not be robocopied. The purpose for utilizing robocopy is to successfully copy challenging file paths that various Python libraries can not handle. The call for robocopy follow the Windows 7 parameters and will need to be updated when computers are running on Windows 10.
+
+Usage: `optical_types.py [-h] -i INPUT -o OUTPUT`
+
+Arguments:
+
+| Argument | Help |
+| --- | --- |
+| -h, --help | Show this help message and exit |
+| -i PATH, --input | CSV file |
+| -o PATH, --outpt | Scan content directory |
+
+
 ## rmw_transfer.py
 Create a barcode directory, including bhl_metadata folder and bhl_notice file, in a accession directory.
 
@@ -119,6 +136,31 @@ Arguments:
 
 Acknowledgments:
 - rmw_transfer.py is developed based on CollectionSetup.exe by [Matt Adair](mailto:mladair@umich.edu).
+
+## robocopy.py
+This is used to copy subdirectories listed in a folder using Windows 7 "robocopy" from the command line. A new folder must be created in the output directory prior to running this script. The log will be a text file located inside of the newly created folder.
+
+Usage: `robocopy.py [-h] -i INPUT -o OUTPUT`
+
+Arguments:
+
+| Argument | Help |
+| --- | --- |
+| -h, --help | Show this help message and exit |
+| -i PATH, --input | Input directory |
+| -o PATH, --output | Output directory |
+
+## runbe.py
+This script will run the bulk_extractor.exe from the command line. Currently, scanning for exif metadata generated from images is turned off. See the manual in the bulk extractor folder for more parameters. To run the script, you must encapsulate the input path in double quotes in the command line or else the script will not run. 
+
+Usage: `runbe.py [-h] -i "<input/folder/path>"`
+
+Arguments:
+
+| Argument | Help |
+| --- | --- |
+| -h, --help | Show this help message and exit |
+| -i PATH, --input | Input directory |
 
 ## unhide_folder.py
 Unhide hidden sub-directories in a directory.
