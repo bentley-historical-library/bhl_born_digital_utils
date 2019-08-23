@@ -1,84 +1,76 @@
-import argparse
 import csv
 import os
-
-parser = argparse.ArgumentParser(description='Check missing folders')
-parser.add_argument('-i', '--input', required=True, help='Input directory')
-args = parser.parse_args()
+import sys
 
 
-# Function
-# Parsing barcodes (with a successful transfer) from bhl_inventory.csv
-def parse_barcodes(src_path):
-    with open(os.path.join(src_path, 'bhl_inventory.csv'), mode='r') as bhl_inventory_csv_file:
-        csv_reader = csv.DictReader(bhl_inventory_csv_file)
-        csv_reader.fieldnames = [fieldname.strip().lower() for fieldname in csv_reader.fieldnames]
+def print_findings(findings, name, location, report_type="count"):
+    passed = len(findings["pass"])
+    failed = len(findings["fail"])
+    total = passed + failed
+    print("\nFound {} total {} in {}".format(total, name, location))
+    if report_type == "count":
+        print("\nPASSED: {}".format(passed))
+        print("\nFAILED: {}".format(failed))
+    elif report_type == "list":
+        print("\nPASSED:")
+        for entry in findings["pass"]:
+            print(entry)
+        print("\nFAILED:")
+        for entry in findings["fail"]:
+            print(entry)
 
-        for row in csv_reader:
-            if row['separation'] == 'Y':
-                csv_fail_list.append(row['barcode'].rstrip(' '))
-            elif row['separation'] == 'N':
-                if row['pass_1_successful'] == 'Y' or row['pass_2_successful'] == 'Y':
-                    csv_pass_list.append(row['barcode'].rstrip(' '))
 
-    print('\nFound', len(csv_fail_list) + len(csv_pass_list), 'barcodes,',
-          len(csv_pass_list), 'passed, and', len(csv_fail_list), 'failed, barcodes in bhl_inventory.csv file')
+def parse_barcodes(bhl_inventory):
+    barcodes = {"pass": [], "fail": []}
+    with open(bhl_inventory, "r", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            barcode = row.get("barcode").strip()
+            separation = row.get("separation").lower().strip()
+            pass_1 = row.get("pass_1_successful").lower().strip()
+            pass_2 = row.get("pass_2_successful").lower().strip()
+            if separation in ["y", "yes"]:
+                barcodes["fail"].append(barcode)
+            elif pass_1 in ["y", "yes"] or pass_2 in ["y", "yes"]:
+                barcodes["pass"].append(barcode)
+    print_findings(barcodes, "barcodes", bhl_inventory, report_type="count")
+    return barcodes
 
 
-# Parsing barcode directories in src
 def parse_directories(src_path):
+    directories = {"pass": [], "fail": []}
     for directory in os.listdir(src_path):
         if os.path.isdir(os.path.join(src_path, directory)):
-            if directory.startswith('_'):
-                directory_fail_list.append(directory.lstrip('_').rstrip(' '))
+            if directory.startswith("_"):
+                directories["fail"].append(directory.lstrip("_").strip())
             else:
-                directory_pass_list.append(directory.rstrip(' '))
-
-    print('\nFound', len(directory_fail_list) + len(directory_pass_list), 'folders,',
-          len(directory_pass_list), 'passed, and', len(directory_fail_list), 'failed in', src_path)
-
-
-# Cross-comparing two lists
-def compare_lists(src_path):
-    # Pass A, do barcodes from csv_list in directory_list?
-    for barcode in csv_pass_list:
-        if barcode not in directory_pass_list:
-            missing_list_A.append(barcode)
-
-    for barcode in csv_fail_list:
-        if barcode not in directory_fail_list:
-            missing_list_A.append(barcode)
-
-    print('\nFound', len(missing_list_A), 'barcodes not in', src_path)
-
-    for barcode in missing_list_A:
-        print(barcode)
-
-    # Pass B, do barcodes from directory_list in csv_list?
-    for barcode in directory_pass_list:
-        if barcode not in csv_pass_list:
-            missing_list_B.append(barcode)
-
-    for barcode in directory_fail_list:
-        if barcode not in csv_fail_list:
-            missing_list_B.append(barcode)
-
-    print('\nFound', len(missing_list_B), 'folders not in', 'bhl_inventory.csv')
-
-    for barcode in missing_list_B:
-        print(barcode)
+                directories["pass"].append(directory.strip())
+    print_findings(directories, "directories", src_path, report_type="count")
+    return directories
 
 
-# Script
-csv_pass_list = []
-csv_fail_list = []
-directory_pass_list = []
-directory_fail_list = []
-missing_list_A = []
-missing_list_B = []
+def compare_dicts(a, b, key):
+    return [item for item in a[key] if item not in b[key]]
 
-print('\nChecking missing folders in', args.input)
 
-parse_barcodes(args.input)
-parse_directories(args.input)
-compare_lists(args.input)
+def compare_barcodes_and_directories(src_path, barcodes, directories):
+    missing_barcodes = {}
+    missing_barcodes["pass"] = compare_dicts(barcodes, directories, "pass")
+    missing_barcodes["fail"] = compare_dicts(barcodes, directories, "fail")
+    print_findings(missing_barcodes, "missing barcodes", src_path, report_type="list")
+
+    missing_directories = {}
+    missing_directories["pass"] = compare_dicts(directories, barcodes, "pass")
+    missing_directories["fail"] = compare_dicts(directories, barcodes, "fail")
+    print_findings(missing_directories, "missing directories", "bhl_inventory.csv", report_type="list")
+
+
+def check_missing_folder(src_path):
+    print("Checking for missing folders in {}".format(src_path))
+    bhl_inventory = os.path.join(src_path, "bhl_inventory.csv")
+    if not os.path.exists(bhl_inventory):
+        print("bhl_inventory not found at {}".format(bhl_inventory))
+        sys.exit()
+    barcodes = parse_barcodes(bhl_inventory)
+    directories = parse_directories(src_path)
+    compare_barcodes_and_directories(src_path, barcodes, directories)

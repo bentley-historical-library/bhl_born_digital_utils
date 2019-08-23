@@ -1,46 +1,28 @@
-import argparse
 import os
 
-parser = argparse.ArgumentParser(description='Check empty folders')
-parser.add_argument('-i', '--input',required=True, help='Input directory')
-args = parser.parse_args()
 
-
-# Function
-# Check for empty barcode folders (* Not recursive)
-def check_empty_folder(src_path):
-    print('Checking empty folders in', src_path)
-    for dirpath, dirnames, files in os.walk(src_path):
+def check_empty_folder_file(src_path):
+    print("Checking for empty folders and files in {}".format(src_path))
+    empty_folders = []
+    empty_files = []
+    for dirpath, dirnames, filenames in os.walk(src_path):
+        # check for empty barcode folders
         for dirname in dirnames:
             if len(os.listdir(os.path.join(dirpath, dirname))) == 0:
-                print('>>>', dirpath + '\\' + dirname, 'is empty')
-#            else:
-#                print(dirpath + '\\' + dirname, 'has files')
-        break
-    print('Done!')
-    print()
+                empty_folders.append(os.path.join(dirpath, dirname))
 
+        # check for 0 byte files in a barcode folder
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            file_size = os.path.getsize(file_path)
+            if file_size == 0:
+                empty_files.append(file_path)
 
-# Check for empty files in a barcode folder (* Not recursive)
-def check_empty_file(src_path):
-    directory_list = []
-    print('Checking empty files in', src_path)
-    for dirname in os.listdir(src_path):
-        if os.path.isdir(os.path.join(src_path, dirname)):
-            directory_list.append(dirname)
+    if len(empty_folders) > 0:
+        print("*** EMPTY FOLDERS FOUND ***")
+        print("\n".join(empty_folders))
 
-    for dirname in directory_list:
-        for dirpath, dirnames, files in os.walk(src_path + '\\' + dirname):
-            print('Checking empty files in', dirpath)
-            for file in files:
-                file_path = os.path.join(dirpath, file)
-                file_size = os.path.getsize(file_path)
-                if file_size == 0:
-                    print('>>>', dirpath + '\\' + file + ' is empty')
-            break
-    print('Done!')
-
-
-# Script
-check_empty_folder(args.input)
-check_empty_file(args.input)
+    if len(empty_files) > 0:
+        print("\n")
+        print("*** EMPTY FILES FOUND ***")
+        print("\n".join(empty_files))
