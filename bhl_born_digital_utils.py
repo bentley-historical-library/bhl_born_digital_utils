@@ -28,7 +28,7 @@ def main():
     parser.add_argument("--thumbsdb_off", action="store_true", default=False, help="Turn off deleting Thumbs.db files")
     parser.add_argument("--dsstore_off", action="store_true", default=False, help="Turn off deleting .DS_Store files")
     parser.add_argument("--desktopdbdf_off", action="store_true", default=False, help="Turn off deleting Desktop DB and Desktop DF files")
-    parser.add_argument("--trashes_off", action="store_true", default=False, help="Turn off deleting .Trashes folders")
+    parser.add_argument("--dirs_off", action="store_true", default=False, help="Turn off deleting .Trashes, .Spotlight-V100, and .fseventsd folders")
 
     parser.add_argument("-s", "--structure", action="store_true", help="Check RipStation output structure")
     parser.add_argument("--validation_off", action="store_true", help="Turn off validating audio CDs and video DVDs")
@@ -52,7 +52,7 @@ def main():
     if args.missing:
         check_missing_folder(args.input)
     if args.osfiles:
-        check_os_files(args.input, args.thumbsdb_off, args.dsstore_off, args.desktopdbdf_off, args.trashes_off)
+        check_os_files(args.input, args.thumbsdb_off, args.dsstore_off, args.desktopdbdf_off, args.dirs_off)
     if args.structure:
         check_output_structure(args.input, args.validation_off)
     if args.unhide:

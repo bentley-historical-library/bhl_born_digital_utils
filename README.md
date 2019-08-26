@@ -69,7 +69,7 @@ Parses the bhl_inventory.csv and subdirectories for a source directory, compares
 | -m, --missing | Check for missing barcodes and folders |
 
 ### Check for and delete system files and directories
-Checks for and deletes operating system files and directories in a source path. Operating system files checked include Thumbs.db, .DS_Store, Desktop DB, and Desktop DF. Operating system directories checked include .Trashes. The script will print all found files and directories to the terminal to confirm deletion. Optional arguments can turn off deleting Thumbs.db, .DS_Store, Desktop DB/DF, and .Trashes.
+Checks for and deletes operating system files and directories in a source path. Operating system files checked include Thumbs.db, .DS_Store, Desktop DB, and Desktop DF. Operating system directories checked include .Trashes, .Spotlight-V100, and .fseventsd. The script will print all found files and directories to the terminal to confirm deletion. Optional arguments can turn off deleting Thumbs.db, .DS_Store, Desktop DB/DF, and directories (.Trashes, .Spotlight-V100, and .fseventsd).
 
 `bhl_born_digital_utils.py PATH -o/--osfiles [--thumbsdb_off] [--dsstore_off] [--desktopdbdf_off] [--trashes_off]`
 
@@ -80,7 +80,7 @@ Checks for and deletes operating system files and directories in a source path. 
 | --thumbsdb_off | Turn off deleting Thumbs.db files |
 | --dsstore_off | Turn off deleting .DS_Store files |
 | --desktopdbdf_off | Turn off deleting Desktop DB and Desktop DF files |
-| --trashes_off | Turn off deleting .Trashes folders |
+| --dirs_off | Turn off deleting .Trashes, .Spotlight-V100, and .fseventsd folders |
 
 ### Check RipStation output structure
 Checks RipStation output structure, including checking to ensure that .mp4 and .wav DIPs have been made for video DVDs and audio CDs, respectively, that photos of removable media exist when applicable, and that .wav and .mp4 files are valid. Optional arguments can turn off validating .wav and .mp4 files.
