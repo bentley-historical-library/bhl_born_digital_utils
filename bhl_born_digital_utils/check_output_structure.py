@@ -109,4 +109,4 @@ def validate_using_ffmpeg(media_path):
 
 def get_ffmpeg_path():
     # update this to read from a config, take an argument, check if ffmpeg exists on path, etc.
-    return os.path.join('ffmpeg', 'bin', 'ffmpeg.exe')
+    return r"C:\BHL\Utilities\ffmpeg\bin\ffmpeg.exe"

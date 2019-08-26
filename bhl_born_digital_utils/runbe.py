@@ -37,7 +37,7 @@ def is_target(row):
         return False
     elif len(barcode) != 14:
         return False
-    elif not media_type.startswith("data"):
+    elif media_type.startswith("audio") or media_type.startswith("video"):
         return False
     else:
         return True

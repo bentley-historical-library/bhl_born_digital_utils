@@ -13,7 +13,7 @@ from bhl_born_digital_utils.runbe import run_bulk_extractor
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input", help="Input directory")
+    parser.add_argument("input", help="Input directory")
 
     parser.add_argument("-c", "--create_transfer", action="store_true", help="Create a RMW transfer")
     parser.add_argument("--rmw", type=int, choices=range(1, 3), help="Removable Media Workstation (RMW) number")
@@ -58,6 +58,9 @@ def main():
     if args.unhide:
         unhide_folders(args.input)
     if args.copy:
+        if not args.destination:
+            print("Please pass a path to destination directory [-d]")
+            sys.exit()
         copy_accession(args.input, args.destination)
     if args.bulkextractor:
         run_bulk_extractor(args.input)
