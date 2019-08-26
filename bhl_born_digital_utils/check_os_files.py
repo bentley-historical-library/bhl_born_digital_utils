@@ -8,9 +8,9 @@ from subprocess import call, DEVNULL
 # https://stackoverflow.com/questions/8529390/is-there-a-quiet-version-of-subprocess-call
 
 
-def check_os_files(src_path, thumbsdb_off, dsstore_off, desktopdbdf_off, trashes_off):
+def check_os_files(src_path, thumbsdb_off, dsstore_off, desktopdbdf_off, dirs_off):
     filenames_to_delete = ["Thumbs.db", ".DS_Store", "Desktop DB", "Desktop DF"]
-    directories_to_delete = [".Trashes"]
+    directories_to_delete = [".Trashes", ".Spotlight-V100", ".fseventsd"]
 
     if thumbsdb_off:
         filenames_to_delete.remove("Thumbs.db")
@@ -19,8 +19,8 @@ def check_os_files(src_path, thumbsdb_off, dsstore_off, desktopdbdf_off, trashes
     if desktopdbdf_off:
         filenames_to_delete.remove("Desktop DB")
         filenames_to_delete.remove("Desktop DF")
-    if trashes_off:
-        directories_to_delete.remove(".Trashes")
+    if dirs_off:
+        directories_to_delete = []
 
     target_lists = search_targets(src_path, filenames_to_delete, directories_to_delete)
     if len(target_lists["files"]) > 0:
