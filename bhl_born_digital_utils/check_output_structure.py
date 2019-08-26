@@ -35,7 +35,7 @@ def get_targets(src_path):
             separation = row.get("separation").lower().strip()
             if (pass_1 in ["y", "yes"] or pass_2 in ["y", "yes"]) and separation not in ["y", "yes"]:
                 if media_type not in target_lists:
-                    target_lists[media_type] = {}
+                    target_lists[media_type] = []
                 target_lists[media_type].append(row)
     return target_lists
 
