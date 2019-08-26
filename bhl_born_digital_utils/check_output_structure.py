@@ -12,35 +12,40 @@ import subprocess
 
 
 def check_output_structure(src_path, validation_off):
-    disc_types = ["audio", "video", "data"]
-    target_lists = get_targets(src_path, disc_types)
-    for disc_type in disc_types:
-        check_optical_discs(src_path, validation_off, target_lists[disc_type], disc_type)
+    target_lists = get_targets(src_path)
+    for media_type in target_lists.keys():
+        check_structure(src_path, validation_off, target_lists[media_type], media_type)
 
 
-def get_targets(src_path, disc_types):
-    target_lists = {disc_type: [] for disc_type in disc_types}
+def get_targets(src_path):
+    target_lists = {}
     bhl_inventory = os.path.join(src_path, "bhl_inventory.csv")
     with open(bhl_inventory, "r", newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            media_type = row.get("media_type").lower().strip()
+            media_type = row.get("media_type", "").lower().strip()
+            if media_type.startswith("audio"):
+                media_type = "audio"
+            elif media_type.startswith("video"):
+                media_type = "video"
+            else:
+                media_type = "data"
             pass_1 = row.get("pass_1_successful").lower().strip()
             pass_2 = row.get("pass_2_successful").lower().strip()
             separation = row.get("separation").lower().strip()
-            if (pass_1 in ["y", "yes"] or pass_2 in ["y", "yes"]) and not separation in ["y", "yes"]:
-                for disc_type in disc_types:
-                    if media_type.startswith(disc_type):
-                        target_lists[disc_type].append(row)
+            if (pass_1 in ["y", "yes"] or pass_2 in ["y", "yes"]) and separation not in ["y", "yes"]:
+                if media_type not in target_lists:
+                    target_lists[media_type] = {}
+                target_lists[media_type].append(row)
     return target_lists
 
 
-def check_optical_discs(src_path, validation_off, target_list, disc_type):
+def check_structure(src_path, validation_off, target_list, media_type):
     for row in target_list:
         barcode = row.get("barcode").strip()
         target_path = os.path.join(src_path, barcode)
 
-        if disc_type == "audio":
+        if media_type == "audio":
             wavs = []
             for root, dirnames, filenames in os.walk(target_path):
                 for filename in filenames:
@@ -53,7 +58,7 @@ def check_optical_discs(src_path, validation_off, target_list, disc_type):
                 for wav in wavs:
                     validate_using_ffmpeg(wav)
 
-        elif disc_type == "video":
+        elif media_type == "video":
             iso_path = os.path.join(target_path, "{}.iso".format(barcode))
             if not os.path.exists(iso_path):
                 print("No .iso files found for {}".format(barcode))
@@ -62,7 +67,7 @@ def check_optical_discs(src_path, validation_off, target_list, disc_type):
                 dip_filepath = os.path.join(target_path, "{}.mp4".format(barcode))
                 validate_using_ffmpeg(dip_filepath)
 
-        elif disc_type == "data":
+        else:
             audio_track = os.path.join(target_path, "track01.cda")
             if os.path.exists(audio_track):
                 print("{} looks like an audio CD to me.".format(barcode))
