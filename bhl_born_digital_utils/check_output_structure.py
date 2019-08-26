@@ -106,9 +106,9 @@ def validate_using_ffmpeg(media_path):
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     output = p.stdout.read().decode("ISO-8859-1")
     if not output:
-        print("{} passed ffmped validation.".format(media_path))
+        print("{} passed ffmpeg validation.".format(media_path))
     else:
-        print("{} failed ffmped validation. See below for details:".format(media_path))
+        print("{} failed ffmpeg validation. See below for details:".format(media_path))
         print(output)
 
 

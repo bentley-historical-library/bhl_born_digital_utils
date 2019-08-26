@@ -71,7 +71,7 @@ Parses the bhl_inventory.csv and subdirectories for a source directory, compares
 ### Check for and delete system files and directories
 Checks for and deletes operating system files and directories in a source path. Operating system files checked include Thumbs.db, .DS_Store, Desktop DB, and Desktop DF. Operating system directories checked include .Trashes, .Spotlight-V100, and .fseventsd. The script will print all found files and directories to the terminal to confirm deletion. Optional arguments can turn off deleting Thumbs.db, .DS_Store, Desktop DB/DF, and directories (.Trashes, .Spotlight-V100, and .fseventsd).
 
-`bhl_born_digital_utils.py PATH -o/--osfiles [--thumbsdb_off] [--dsstore_off] [--desktopdbdf_off] [--trashes_off]`
+`bhl_born_digital_utils.py PATH -o/--osfiles [--thumbsdb_off] [--dsstore_off] [--desktopdbdf_off] [--dirs_off]`
 
 | Argument | Help |
 | --- | --- |
