@@ -1,6 +1,14 @@
 # BHL Born-digital Utilities
 Scripts and templates used for born-digital transfers at the Bentley Historical Library
 
+## Requirements
+
+- Python 3: Required to run all utilities
+- Pillow: To adjust images of removable media
+- FFmpeg: To validate audio and video files
+- bulk_extractor: To scan for PII
+- rsync: To copy files on non-Windows machines
+
 ## bhl_inventory.csv
 A tracking template used for born-digital transfers at the Bentley Historical Library. See [README for bhl_inventory.csv](bhl_inventory/README.md).
 
