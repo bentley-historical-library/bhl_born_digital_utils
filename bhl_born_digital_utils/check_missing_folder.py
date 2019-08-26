@@ -40,11 +40,12 @@ def parse_barcodes(bhl_inventory):
 def parse_directories(src_path):
     directories = {"pass": [], "fail": []}
     for directory in os.listdir(src_path):
-        if os.path.isdir(os.path.join(src_path, directory)):
-            if directory.startswith("_"):
-                directories["fail"].append(directory.lstrip("_").strip())
-            else:
-                directories["pass"].append(directory.strip())
+        if directory not in ["bhl_logs", "bhl_notices"]:
+            if os.path.isdir(os.path.join(src_path, directory)):
+                if directory.startswith("_"):
+                    directories["fail"].append(directory.lstrip("_").strip())
+                else:
+                    directories["pass"].append(directory.strip())
     print_findings(directories, "directories", src_path, report_type="count")
     return directories
 
