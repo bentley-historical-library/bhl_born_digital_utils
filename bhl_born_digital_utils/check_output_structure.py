@@ -1,6 +1,7 @@
 import csv
 import os
 import subprocess
+import sys
 
 # Reference
 # https://stackoverflow.com/questions/33344413/why-is-my-for-loop-skipping-an-element-in-my-list
@@ -42,6 +43,7 @@ def get_targets(src_path):
 
 def check_structure(src_path, validation_off, target_list, media_type):
     for row in target_list:
+        accession_number = os.path.split(src_path)[-1]
         barcode = row.get("barcode").strip()
         target_path = os.path.join(src_path, barcode)
 
@@ -56,7 +58,7 @@ def check_structure(src_path, validation_off, target_list, media_type):
             dip_exists = confirm_dip(row, target_path, barcode, "wav")
             if not validation_off and len(wavs) > 0:
                 for wav in wavs:
-                    validate_using_ffmpeg(wav)
+                    validate_using_ffmpeg(wav, accession_number)
 
         elif media_type == "video":
             iso_path = os.path.join(target_path, "{}.iso".format(barcode))
@@ -65,7 +67,7 @@ def check_structure(src_path, validation_off, target_list, media_type):
             dip_exists = confirm_dip(row, target_path, barcode, "mp4")
             if dip_exists and not validation_off:
                 dip_filepath = os.path.join(target_path, "{}.mp4".format(barcode))
-                validate_using_ffmpeg(dip_filepath)
+                validate_using_ffmpeg(dip_filepath, accession_number)
 
         else:
             audio_track = os.path.join(target_path, "track01.cda")
@@ -93,25 +95,37 @@ def confirm_dip(row, target_path, barcode, extension):
         return False
 
 
-def validate_using_ffmpeg(media_path):
+def validate_using_ffmpeg(media_path, accession_number):
     ffmpeg_path = get_ffmpeg_path()
+    log_path = get_log_path(media_path, accession_number)
     print("Validating {}".format(media_path))
-    cmd = [
-        ffmpeg_path,
-        "-loglevel", "error",
-        "-i", media_path,
-        "-f", "null", "-",
-        "2>&1"
-    ]
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    output = p.stdout.read().decode("ISO-8859-1")
-    if not output:
+    cmd = "{0} -loglevel error -i \"{1}\" -f null - 2>{2}".format(ffmpeg_path, media_path, log_path)
+    subprocess.check_call(cmd, shell=True)
+    if os.path.getsize(log_path) == 0:
         print("{} passed ffmpeg validation.".format(media_path))
     else:
-        print("{} failed ffmpeg validation. See below for details:".format(media_path))
-        print(output)
+        print("{} failed ffmpeg validation. See {} for details".format(log_path))
 
 
 def get_ffmpeg_path():
     # update this to read from a config, take an argument, check if ffmpeg exists on path, etc.
-    return r"C:\BHL\Utilities\ffmpeg\bin\ffmpeg.exe"
+    if "win" in sys.platform:
+        return r"C:\BHL\Utilities\ffmpeg\bin\ffmpeg.exe"
+    else:
+        return "ffmpeg"
+
+
+def get_log_path(media_path, accession_number):
+    media_filename = os.path.split(media_path)[-1]
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    logs_dir = os.path.join(base_dir, "logs")
+    if not os.path.exists(logs_dir):
+        os.mkdir(logs_dir)
+    accession_dir = os.path.join(logs_dir, accession_number)
+    if not os.path.exists(accession_dir):
+        os.mkdir(accession_dir)
+    ffmpeg_dir = os.path.join(accession_dir, "ffmpeg")
+    if not os.path.exists(ffmpeg_dir):
+        os.mkdir(ffmpeg_dir)
+    log_path = os.path.join(ffmpeg_dir, "{}.log".format(media_filename))
+    return log_path
