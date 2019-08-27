@@ -104,7 +104,7 @@ def validate_using_ffmpeg(media_path, accession_number):
     if os.path.getsize(log_path) == 0:
         print("{} passed ffmpeg validation.".format(media_path))
     else:
-        print("{} failed ffmpeg validation. See {} for details".format(log_path))
+        print("{} failed ffmpeg validation. See {} for details".format(media_path, log_path))
 
 
 def get_ffmpeg_path():
