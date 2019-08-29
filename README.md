@@ -27,6 +27,8 @@ Usage: `bhl_born_digital_utils.py PATH action [options]`
 | -u, --unhide | Unhide folders (Windows workstations only) |
 | -b, --bulkextractor | Run bulk_extractor |
 | --copy | Copy accession from RMW |
+| --move_separations | Move separations |
+| --av_media | Separate AV media |
 
 ### Create a RMW transfer
 Create barcode directories, bhl_metadata, and bhl_notices directories inside an accession directory
@@ -126,6 +128,27 @@ This utility copies a directory using robocopy (on Windows) or rsync. It takes a
 | PATH | Input directory |
 | -d, --destination | Destination directory |
 | --copy | Copy accession from RMW |
+
+### Move separations
+This utility moves separated directories to a given destination directory. The script parses the bhl_inventory.csv in a given source directory to identify media that has been marked as separated by a `separation` column with a value of `y`, and then moves the `_barcode` directory from within the source directory to an `[accession]_separations` directory in the given destination. The script attempts to determine the accession number of a transfer by using the directory name of the source directory (e.g., `/path/to/source/1234` has an accesison number of `1234`). An accession number can be explicitly supplied with an optional `-a/--accession` argument.
+
+`bhl_born_digital_utils.py PATH -d/--destination PATH [-a/--accession] ACCESSION --move_separations`
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| -d, --destination | Destination directory |
+| --move_separations | Move separations |
+| -a, --accession | Accession number |
+
+### Separate AV media
+This utility moves audio-formatted CDs and video-formatted DVDs into their own directory so that AV content can be processed using Archivematica's automation-tools and data content can be sent to Archivematica's backlog. The script parses the bhl_inventory.csv in a given source directory to identify media with a `media_type` that begins with `audio` or `video` and then moves those barcode directories into a new directory named `[accession]_audiovisual` in the source directory's parent directory. For example, given a source directory of `/path/to/source/1234`, the script will move audiovisual media into `/path/to/source/1234_audiovisual`. The script attempts to determine the accession number of a transfer by using the directory name of the source directory. An accession number can be explicitly supplied with an optional `-a/--accession` argument.
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| --av_media | Separate AV media |
+| -a, --accession | Accession number |
 
 ## make_dips.py
 Warning: This script has not yet been integrated in bhl_born_digital_utils.py

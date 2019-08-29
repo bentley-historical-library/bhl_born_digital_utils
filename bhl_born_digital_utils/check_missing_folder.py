@@ -26,13 +26,14 @@ def parse_barcodes(bhl_inventory):
         reader = csv.DictReader(f)
         for row in reader:
             barcode = row.get("barcode").strip()
-            separation = row.get("separation").lower().strip()
-            pass_1 = row.get("pass_1_successful").lower().strip()
-            pass_2 = row.get("pass_2_successful").lower().strip()
-            if separation in ["y", "yes"]:
-                barcodes["fail"].append(barcode)
-            elif pass_1 in ["y", "yes"] or pass_2 in ["y", "yes"]:
-                barcodes["pass"].append(barcode)
+            if barcode:
+                separation = row.get("separation", "").lower().strip()
+                pass_1 = row.get("pass_1_successful", "").lower().strip()
+                pass_2 = row.get("pass_2_successful", "").lower().strip()
+                if separation in ["y", "yes"]:
+                    barcodes["fail"].append(barcode)
+                elif pass_1 in ["y", "yes"] or pass_2 in ["y", "yes"]:
+                    barcodes["pass"].append(barcode)
     print_findings(barcodes, "barcodes", bhl_inventory, report_type="count")
     return barcodes
 

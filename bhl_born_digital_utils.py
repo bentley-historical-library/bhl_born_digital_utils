@@ -9,6 +9,8 @@ from bhl_born_digital_utils.check_output_structure import check_output_structure
 from bhl_born_digital_utils.unhide_folders import unhide_folders
 from bhl_born_digital_utils.copy_accession import copy_accession
 from bhl_born_digital_utils.runbe import run_bulk_extractor
+from bhl_born_digital_utils.move_separations import move_separations
+from bhl_born_digital_utils.separate_av_media import separate_av_media
 
 
 def main():
@@ -40,6 +42,11 @@ def main():
 
     parser.add_argument("-b", "--bulkextractor", action="store_true", help="Run bulk_extractor")
 
+    parser.add_argument("--move_separations", action="store_true", help="Move separations")
+    parser.add_argument("--av_media", action="store_true", help="Separate AV media")
+
+    parser.add_argument("-a", "--accession", help="Accession number")
+
     args = parser.parse_args()
 
     if args.create_transfer:
@@ -57,6 +64,13 @@ def main():
         check_output_structure(args.input, args.validation_off)
     if args.unhide:
         unhide_folders(args.input)
+    if args.move_separations:
+        if not args.destination:
+            print("Please pass a path to a destination directory [-d]")
+            sys.exit()
+        move_separations(args.input, args.destination, args.accession)
+    if args.av_media:
+        separate_av_media(args.input, args.accession)
     if args.copy:
         if not args.destination:
             print("Please pass a path to destination directory [-d]")
