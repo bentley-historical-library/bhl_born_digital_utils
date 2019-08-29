@@ -63,7 +63,7 @@ def delete_targets(target_list, target_type):
     for target in target_list:
         if target_type == "files":
             try:
-                call(["attrib", "-R", "-S", target], stderr=DEVNULL, stdout=DEVNULL)
+                call(["attrib", "-H", "-R", "-S", target], stderr=DEVNULL, stdout=DEVNULL)
                 os.remove(target)
             except OSError:
                 print("Failed to delete {} file: ".format(target))
