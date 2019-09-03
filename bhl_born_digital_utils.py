@@ -11,6 +11,7 @@ from bhl_born_digital_utils.copy_accession import copy_accession
 from bhl_born_digital_utils.runbe import run_bulk_extractor
 from bhl_born_digital_utils.move_separations import move_separations
 from bhl_born_digital_utils.separate_av_media import separate_av_media
+from bhl_born_digital_utils.rename_files import rename_files
 
 
 def main():
@@ -47,6 +48,8 @@ def main():
 
     parser.add_argument("-a", "--accession", help="Accession number")
 
+    parser.add_argument("--rename_files", action="store_true", help="Rename files with invalid characters")
+
     args = parser.parse_args()
 
     if args.create_transfer:
@@ -78,6 +81,8 @@ def main():
         copy_accession(args.input, args.destination)
     if args.bulkextractor:
         run_bulk_extractor(args.input)
+    if args.rename_files:
+        rename_files(args.input)
 
 
 if __name__ == "__main__":
