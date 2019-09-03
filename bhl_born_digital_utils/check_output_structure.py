@@ -99,7 +99,7 @@ def validate_using_ffmpeg(media_path, accession_number):
     ffmpeg_path = get_ffmpeg_path()
     log_path = get_log_path(media_path, accession_number)
     print("Validating {}".format(media_path))
-    cmd = "{0} -loglevel error -i \"{1}\" -f null - 2>{2}".format(ffmpeg_path, media_path, log_path)
+    cmd = "{0} -loglevel error -i \"{1}\" -f null - 2>\"{2}\"".format(ffmpeg_path, media_path, log_path)
     subprocess.check_call(cmd, shell=True)
     if os.path.getsize(log_path) == 0:
         print("{} passed ffmpeg validation.".format(media_path))
