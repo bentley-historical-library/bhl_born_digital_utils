@@ -2,7 +2,7 @@ import os
 import string
 
 # Borrowed heavily from https://github.com/artefactual/archivematica/blob/stable/1.9.x/src/MCPClient/lib/clientScripts/sanitize_names.py
-valid = string.ascii_letters + string.digits + r"-_.()#,&[]%$\+{}~:\"! "
+valid = string.ascii_letters + string.digits + r"-_.()#,&[]%$\+{}~! "
 replacement_char = "_"
 
 
@@ -22,7 +22,6 @@ def get_targets(src_path):
         for filename in filenames:
                 if any([c for c in filename if c not in valid]):
                     filepath = os.path.join(root, filename)
-
                     files_to_rename.append(filepath)
     return files_to_rename
 

@@ -29,6 +29,7 @@ Usage: `bhl_born_digital_utils.py PATH action [options]`
 | --copy | Copy accession from RMW |
 | --move_separations | Move separations |
 | --av_media | Separate AV media |
+| --rename_files | Rename files with invalid characters |
 
 ### Create a RMW transfer
 Create barcode directories, bhl_metadata, and bhl_notices directories inside an accession directory
@@ -132,7 +133,7 @@ This utility copies a directory using robocopy (on Windows) or rsync. It takes a
 ### Move separations
 This utility moves separated directories to a given destination directory. The script parses the bhl_inventory.csv in a given source directory to identify media that has been marked as separated by a `separation` column with a value of `y`, and then moves the `_barcode` directory from within the source directory to an `[accession]_separations` directory in the given destination. The script attempts to determine the accession number of a transfer by using the directory name of the source directory (e.g., `/path/to/source/1234` has an accesison number of `1234`). An accession number can be explicitly supplied with an optional `-a/--accession` argument.
 
-`bhl_born_digital_utils.py PATH -d/--destination PATH [-a/--accession] ACCESSION --move_separations`
+`bhl_born_digital_utils.py PATH -d/--destination PATH [-a/--accession ACCESSION] --move_separations`
 
 | Argument | Help |
 | --- | --- |
@@ -144,11 +145,23 @@ This utility moves separated directories to a given destination directory. The s
 ### Separate AV media
 This utility moves audio-formatted CDs and video-formatted DVDs into their own directory so that AV content can be processed using Archivematica's automation-tools and data content can be sent to Archivematica's backlog. The script parses the bhl_inventory.csv in a given source directory to identify media with a `media_type` that begins with `audio` or `video` and then moves those barcode directories into a new directory named `[accession]_audiovisual` in the source directory's parent directory. For example, given a source directory of `/path/to/source/1234`, the script will move audiovisual media into `/path/to/source/1234_audiovisual`. The script attempts to determine the accession number of a transfer by using the directory name of the source directory. An accession number can be explicitly supplied with an optional `-a/--accession` argument.
 
+`bhl_born_digital_utils.py PATH --av_media [-a/-accession ACCESSION]`
+
 | Argument | Help |
 | --- | --- |
 | PATH | Input directory |
 | --av_media | Separate AV media |
 | -a, --accession | Accession number |
+
+### Rename files
+This utility replaces 'invalid' characters in a filename with an underscore. The script is based heavily off of [Archivematica's sanitize_names.py](https://github.com/artefactual/archivematica/blob/stable/1.9.x/src/MCPClient/lib/clientScripts/sanitize_names.py). The rename files utility allows several more characters in a filename, as its primary use case is to resolve issues with running bagit.py on directories that contain files with certain invalid characters. The utility prints out a list of files that will be renamed and asks for confirmation. This script should be used sparingly, and only after bagging attempts on Windows and Linux filesystems have failed.
+
+`bhl_born_digital_utils.py PATH --rename_files`
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory|
+| --rename_files | Rename files |
 
 ## make_dips.py
 Warning: This script has not yet been integrated in bhl_born_digital_utils.py
