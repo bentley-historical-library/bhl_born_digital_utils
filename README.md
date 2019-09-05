@@ -1,84 +1,158 @@
 # BHL Born-digital Utilities
 Scripts and templates used for born-digital transfers at the Bentley Historical Library
 
-## Table of Contents
-- [bhl_inventory.csv](https://github.com/bentley-historical-library/bhl_born_digital_utils#bhl_inventorycsv)
-- [check_empty_folder file.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#check_empty_folder_filepy): Check for empty sub-directories and files in a directory.
-- [check_missing_folder.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#check_missing_folderpy): Check for missing sub-directories by comparing directory and bhl_inventory.csv
-- [check_output_structure.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#check_folder_structurepy): Check for RipStation output structure.
-- [check_os files.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#check_os_filespy): Check and delete operating system files in a directory.
-- [make_dips.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#make_dipspy): Make DIPs from RipStation audio (.wav) and video (.iso) output.
-- [optical_types.py](https://github.com/bentley-historical-library/bhl_born_digital_utilss#optical_typespy): Sort optical disc types listed in a csv inventory and robocopy content from filtered optical discs.
-- [rmw_transfer.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#rmw_transferpy): Create a barcode directory, including bhl_metadata folder and bhl_notice file, in a accession directory.
-- [robocopy.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#robocopypy): Used to copy newly transferred content to the digital archive.
-- [runbe.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#runbepy): Run bulk extractor from the command line.
-- [unhide_folder.py](https://github.com/bentley-historical-library/bhl_born_digital_utils#unhide_folderpy): Unhide hidden sub-directories in a directory.
+## Requirements
+
+- Python 3: Required to run all utilities
+- Pillow: To adjust images of removable media
+- FFmpeg: To validate audio and video files
+- bulk_extractor: To scan for PII
+- rsync: To copy files on non-Windows machines
 
 ## bhl_inventory.csv
 A tracking template used for born-digital transfers at the Bentley Historical Library. See [README for bhl_inventory.csv](bhl_inventory/README.md).
 
-## check_empty_folder_file.py
-Check for empty sub-directories and files in a directory.
+## bhl_born_digital_utils.py
+This script serves as the entry point to various born-digital transfer utilities. A summary of the script's usage and available actions are below, followed by detailed instructions for each utility.
 
-Usage: `check_empty_folder_file.py [-h] -i PATH`
+Usage: `bhl_born_digital_utils.py PATH action [options]`
 
-Arguments:
+| Action | Description |
+| --- | --- |
+| -c, --create_transfer | Create a RMW transfer |
+| -e, --empty | Check for empty folders and files |
+| -m, --missing | Check for missing barcodes and folders |
+| -o, --osfiles | Check for and delete system files and directories |
+| -s, --structure | Check RipStation output structure |
+| -u, --unhide | Unhide folders (Windows workstations only) |
+| -b, --bulkextractor | Run bulk_extractor |
+| --copy | Copy accession from RMW |
+| --move_separations | Move separations |
+| --av_media | Separate AV media |
+
+### Create a RMW transfer
+Create barcode directories, bhl_metadata, and bhl_notices directories inside an accession directory
+
+Requirements:
+- This script uses the Logitech Webcam's default file save location for getting images. 
+- This script uses [Pillow](https://github.com/python-pillow/Pillow) to adjust images of removable media. 
+- bhl_notice uses [JsBarcode](https://github.com/lindell/JsBarcode) CDN to a render Codabar barcode in the HTML document.  
+
+`bhl_born_digital_utils.py PATH -c/--create_transfer --rmw INT [--metadata_off] [--notices_off]`
 
 | Argument | Help |
 | --- | --- |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | Input directory |
+| PATH | Input directory (path to an accession directory) |
+| -c, --create_transfer | Create a RMW transfer |
+| --rmw | Removable media workstation number (either 1 or 2) |
+| --metadata_off | Turn off creating bhl_metadata directory inside barcode folders |
+| --notices_off | Turn off creating bhl_notices inside accession folder |
 
-## check_missing_folder.py
-Check for missing sub-directories by comparing directory and bhl_inventory.csv.
+Acknowledgments: This utility is developed based on CollectionSetup.exe by [Matt Adair](mailto:mladair@umich.edu).
 
-Usage: `check_missing_folder.py [-h] -i PATH`
+### Check for empty folders and files
+Checks for empty directories and 0-byte files in a source directory and prints the results to the terminal
 
-Arguments:
-
-| Argument | Help |
-| --- | --- |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | Input directory |
-
-## check_output_structure.py
-Check for RipStation output structure.
-
-Dependency:
-This script uses FFmpeg's -f null method to validate .wav and .mp4 files. 
-
-- Download zipped [FFmpeg](https://www.ffmpeg.org/download.html) package.
-- Rename package folders to 'ffmepg'.
-- Place package folders in the same folder with check_output_structure.py.
-
-Usage:
-- On the command line, navigate (`cd`) to the directory that contains `check_output_structure.py`
-- `check_output_structure.py [-v] [-h] -i PATH`
-
-Arguments:
+`bhl_born_digital_utils.py PATH -e/--empty`
 
 | Argument | Help |
 | --- | --- |
-| -v, --validation_off | Turn off validating .wav and .mp4 files |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | Input directory |
+| PATH | Input directory |
+| -e, --empty | Check for empty folders and files |
 
-## check_os_files.py
-Check and DELETE operating system files, such as Thumbs.db, .DS_store, Desktop DB, Desktop DF, in a directory.
+### Check for missing barcodes and folders
+Parses the bhl_inventory.csv and subdirectories for a source directory, compares the results, and lists barcodes that are in the bhl_inventory.csv but not in the source directory and subdirectories in the source directory that are not accounted for in the bhl_inventory.csv
 
-Usage: `check_os_files.py [-b] [-e] [-f] [-h] -i PATH`
-
-Arguments:
+`bhl_born_digital_utils.py PATH -m/--missing`
 
 | Argument | Help |
 | --- | --- |
-| -b, --thumbsdb_off | Turn off deleting Thumbs.db files |
-| -e, --dsstore_off | Turn off deleting .DS_Store files |
-| -f, --desktopdbdf_off | Turn off deleting Desktop DB and Desktop DF files |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | Input directory |
+| PATH | Input directory|
+| -m, --missing | Check for missing barcodes and folders |
+
+### Check for and delete system files and directories
+Checks for and deletes operating system files and directories in a source path. Operating system files checked include Thumbs.db, .DS_Store, Desktop DB, and Desktop DF. Operating system directories checked include .Trashes, .Spotlight-V100, and .fseventsd. The script will print all found files and directories to the terminal to confirm deletion. Optional arguments can turn off deleting Thumbs.db, .DS_Store, Desktop DB/DF, and directories (.Trashes, .Spotlight-V100, and .fseventsd).
+
+`bhl_born_digital_utils.py PATH -o/--osfiles [--thumbsdb_off] [--dsstore_off] [--desktopdbdf_off] [--dirs_off]`
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| -o, --osfiles | Check for and delete system files |
+| --thumbsdb_off | Turn off deleting Thumbs.db files |
+| --dsstore_off | Turn off deleting .DS_Store files |
+| --desktopdbdf_off | Turn off deleting Desktop DB and Desktop DF files |
+| --dirs_off | Turn off deleting .Trashes, .Spotlight-V100, and .fseventsd folders |
+
+### Check RipStation output structure
+Checks RipStation output structure, including checking to ensure that .mp4 and .wav DIPs have been made for video DVDs and audio CDs, respectively, that photos of removable media exist when applicable, and that .wav and .mp4 files are valid. Optional arguments can turn off validating .wav and .mp4 files.
+
+Requirements: This script uses ffmpeg to validate .wav and .mp4 files. It currently expects ffmpeg to be installed in a very specific directory on the RMW workstation.
+
+`bhl_born_digital_utils.py PATH -s/--structure [--validation_off]`
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| --validation_off | Turn off validating .wav (audio CDs) and .mp4 (video DVDs) |
+
+### Unhide folders
+Unhide hidden sub-directories in a directory. Note: This removes the Windows -H (hidden) and -S (system) attributes from directories, and as such is only applicable on Windows machines.
+
+`bhl_born_digital_utils.py PATH -u/--unhide`
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| -u, --unhide | Unhide folders |
+
+### Run bulk_extractor
+This script will run the bulk_extractor.exe from the command line. Currently, scanning for exif metadata generated from images is turned off, and bulk_extractor will use its `accts` scanner to search for PII such as Social Security numbers, credit card numbers, telephone numbers, and email addresses. Reports generated by bulk_extractor will be stored in a logs subdirectory within the bhl_born_digital_utils root directory. In order to save time, resources, and to avoid false positives, bulk_extractor is not run on audio CDs or video DVDs. bulk_extractor reports are stored in subdirectories for each piece of removable media scanned. Following scanning, all empty reports are deleted, leaving only reports that had one or more hit.
+
+Requirements: This utility requires that bulk_extractor is installed. It currently checks for the Windows version of bulk_extractor in a specific directory on the RMW workstation, and will attempt to use bulk_extractor on the system path in other environments.
+
+`bhl_born_digital_utils.py PATH -b/--bulkextractor`
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| -b, --bulkextractor | Run bulk_extractor |
+
+### Copy accession from RMW
+This utility copies a directory using robocopy (on Windows) or rsync. It takes an input directory and an output directory, and its primary purpose is to copy accessions from a removable media workstation to a network storage location. This utility will create a log file of the form `[accession_number]_[timestamp].txt` in a logs subdirectory in the bhl_born_digital_utils root directory.
+
+`bhl_born_digital_utils.py PATH --copy -d/--destination PATH`
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| -d, --destination | Destination directory |
+| --copy | Copy accession from RMW |
+
+### Move separations
+This utility moves separated directories to a given destination directory. The script parses the bhl_inventory.csv in a given source directory to identify media that has been marked as separated by a `separation` column with a value of `y`, and then moves the `_barcode` directory from within the source directory to an `[accession]_separations` directory in the given destination. The script attempts to determine the accession number of a transfer by using the directory name of the source directory (e.g., `/path/to/source/1234` has an accesison number of `1234`). An accession number can be explicitly supplied with an optional `-a/--accession` argument.
+
+`bhl_born_digital_utils.py PATH -d/--destination PATH [-a/--accession] ACCESSION --move_separations`
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| -d, --destination | Destination directory |
+| --move_separations | Move separations |
+| -a, --accession | Accession number |
+
+### Separate AV media
+This utility moves audio-formatted CDs and video-formatted DVDs into their own directory so that AV content can be processed using Archivematica's automation-tools and data content can be sent to Archivematica's backlog. The script parses the bhl_inventory.csv in a given source directory to identify media with a `media_type` that begins with `audio` or `video` and then moves those barcode directories into a new directory named `[accession]_audiovisual` in the source directory's parent directory. For example, given a source directory of `/path/to/source/1234`, the script will move audiovisual media into `/path/to/source/1234_audiovisual`. The script attempts to determine the accession number of a transfer by using the directory name of the source directory. An accession number can be explicitly supplied with an optional `-a/--accession` argument.
+
+| Argument | Help |
+| --- | --- |
+| PATH | Input directory |
+| --av_media | Separate AV media |
+| -a, --accession | Accession number |
 
 ## make_dips.py
+Warning: This script has not yet been integrated in bhl_born_digital_utils.py
+
 Make dissemination information packages (DIPs) from RipStation audio (.wav) and video (.iso) output. 
 
 Dependency:
@@ -99,77 +173,3 @@ Arguments:
 | -h, --help | show this help message and exit |
 | -i PATH, --input | Input directory |
 | -o PATH, --output | Output directory |
-
-## optical_types.py
-This is used to filter inventoried barcodes by the optical disc type listed in a CSV file inventory and robocopy selected folders and corresponding content to a temporary folder. Specifically, inventoried barcodes with optical disc types listed as 'audio CD' or 'video DVD' will not be robocopied to a new directory because Bulk Extractor does not accurately scan for PII with those files. In addition, inventoried barcodes marked for separation will not be robocopied. The purpose for utilizing robocopy is to successfully copy challenging file paths that various Python libraries can not handle. The call for robocopy follow the Windows 7 parameters and will need to be updated when computers are running on Windows 10.
-
-Usage: `optical_types.py [-h] -i INPUT -o OUTPUT`
-
-Arguments:
-
-| Argument | Help |
-| --- | --- |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | CSV file |
-| -o PATH, --outpt | Scan content directory |
-
-
-## rmw_transfer.py
-Create a barcode directory, including bhl_metadata folder and bhl_notice file, in a accession directory.
-
-Dependency: 
-- This script uses the Logitech Webcam's default file save location for getting images. 
-- This script uses [Pillow](https://github.com/python-pillow/Pillow) to adjust images of removable media. 
-- bhl_notice uses [JsBarcode](https://github.com/lindell/JsBarcode) CDN to a render Codabar barcode in the HTML document.  
-
-Usage: `rmw_transfer.py [-m] [-n] --rmw NUMBER [-h] -i PATH`
-
-Arguments:
-
-| Argument | Help |
-| --- | --- |
-| -m, --metadata_off | Turn off creating bhl_metadata directory |
-| -n, --notice_off | Turn off creating bhl_notice file |
-| --rmw | RMW (Removable Media Workstation) Number (e.g., 1 or 2) |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | Input directory |
-
-Acknowledgments:
-- rmw_transfer.py is developed based on CollectionSetup.exe by [Matt Adair](mailto:mladair@umich.edu).
-
-## robocopy.py
-This is used to copy subdirectories listed in a folder using Windows 7 "robocopy" from the command line. A new folder must be created in the output directory prior to running this script. The log will be a text file located inside of the newly created folder.
-
-Usage: `robocopy.py [-h] -i INPUT -o OUTPUT`
-
-Arguments:
-
-| Argument | Help |
-| --- | --- |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | Input directory |
-| -o PATH, --output | Output directory |
-
-## runbe.py
-This script will run the bulk_extractor.exe from the command line. Currently, scanning for exif metadata generated from images is turned off. See the manual in the bulk extractor folder for more parameters. To run the script, you must encapsulate the input path in double quotes in the command line or else the script will not run. 
-
-Usage: `runbe.py [-h] -i "<input/folder/path>"`
-
-Arguments:
-
-| Argument | Help |
-| --- | --- |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | Input directory |
-
-## unhide_folder.py
-Unhide hidden sub-directories in a directory.
-
-Usage: `unhide_folder.py [-h] -i PATH`
-
-Arguments:
-
-| Argument | Help |
-| --- | --- |
-| -h, --help | Show this help message and exit |
-| -i PATH, --input | Input directory |
