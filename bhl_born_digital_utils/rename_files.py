@@ -1,7 +1,6 @@
 import os
 import re
 import shutil
-from unidecode import unidecode
 
 # Borrowed heavily from https://github.com/artefactual/archivematica/blob/stable/1.10.x/src/MCPClient/lib/clientScripts/sanitize_names.py
 ALLOWED_CHARS = re.compile(r"[^a-zA-Z0-9\-_\.\(\)#,&%\$\{\}~! ]")
@@ -31,7 +30,7 @@ def recursively_get_targets(src_path):
 
         start_path = dir_entry.path
         basename = os.path.basename(start_path)
-        sanitized_name = sanitize_name(basename)
+        sanitized_name = ALLOWED_CHARS.sub(REPLACEMENT_CHAR, basename)
         sanitized_path = os.path.join(src_path, sanitized_name)
 
         is_target = sanitized_path != start_path
@@ -41,13 +40,6 @@ def recursively_get_targets(src_path):
         if is_dir:
             for result in recursively_get_targets(start_path):
                 yield result
-
-
-def sanitize_name(basename):
-    unicode_name = unidecode(basename)
-    if unicode_name == "":
-        unicode_name = basename
-    return ALLOWED_CHARS.sub(REPLACEMENT_CHAR, unicode_name)
 
 
 def confirm_renaming(dirs_to_rename, files_to_rename):
