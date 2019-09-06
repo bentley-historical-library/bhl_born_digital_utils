@@ -4,7 +4,7 @@ import shutil
 from unidecode import unidecode
 
 # Borrowed heavily from https://github.com/artefactual/archivematica/blob/stable/1.10.x/src/MCPClient/lib/clientScripts/sanitize_names.py
-ALLOWED_CHARS = re.compile(r"[^a-zA-Z0-9\-_\.\(\)#,&%\$\{\}~!] ")
+ALLOWED_CHARS = re.compile(r"[^a-zA-Z0-9\-_\.\(\)#,&%\$\{\}~! ]")
 REPLACEMENT_CHAR = "_"
 
 
@@ -59,7 +59,7 @@ def confirm_renaming(dirs_to_rename, files_to_rename):
     for old_path, sanitized_path in files_to_rename:
         print("{} --> {}".format(old_path, sanitized_path))
 
-    confirm_rename = input("Rename files?: ")
+    confirm_rename = input("Rename files? (y/n): ")
     if confirm_rename.lower().strip() in ["y", "yes"]:
         # reverse the lists so that files and directories deeper in the tree get renamed first
         dirs_to_rename.reverse()
