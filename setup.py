@@ -9,7 +9,7 @@ setup(
     url='https://github.com/bentley-historical-library/bhl_born_digital_utils',
     author='Bentley Historical Library',
     packages=find_packages(),
-    scripts=['bhl_born_digital_utils.py'],
+    scripts=['bhl_bd_utils.py'],
     description='Bentley Historical Library born-digital utilities',
     install_requires=requirements
 )
