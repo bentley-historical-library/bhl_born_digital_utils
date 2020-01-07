@@ -2,15 +2,17 @@ import csv
 import os
 import subprocess
 import sys
+import re
 
 # Reference
 # https://stackoverflow.com/questions/33344413/why-is-my-for-loop-skipping-an-element-in-my-list
+# https://docs.python.org/3.3/howto/regex.html#performing-matches
+# https://stackoverflow.com/questions/1800817/how-can-i-get-part-of-regex-match-as-a-variable-in-python
 
 # Reference for validate_using_ffmpeg()
 # https://superuser.com/questions/100288/how-can-i-check-the-integrity-of-a-video-file-avi-mpeg-mp4
 # https://stackoverflow.com/questions/4117530/sys-argv1-meaning-in-script
 # http://openpreservation.org/blog/2017/01/04/breaking-waves-and-some-flacs/
-
 
 def check_output_structure(src_path, validation_off):
     target_lists = get_targets(src_path)
@@ -42,9 +44,11 @@ def get_targets(src_path):
 
 
 def check_structure(src_path, validation_off, target_list, media_type):
+
     for row in target_list:
         accession_number = os.path.split(src_path)[-1]
         barcode = row.get("barcode").strip()
+        pattern = re.compile(barcode) # Setting pattern to search for later
         target_path = os.path.join(src_path, barcode)
 
         if media_type == "audio":
@@ -61,13 +65,39 @@ def check_structure(src_path, validation_off, target_list, media_type):
                     validate_using_ffmpeg(wav, accession_number)
 
         elif media_type == "video":
-            iso_path = os.path.join(target_path, "{}.iso".format(barcode))
-            if not os.path.exists(iso_path):
-                print("No .iso files found for {}".format(barcode))
-            dip_exists = confirm_dip(row, target_path, barcode, "mp4")
-            if dip_exists and not validation_off:
-                dip_filepath = os.path.join(target_path, "{}.mp4".format(barcode))
-                validate_using_ffmpeg(dip_filepath, accession_number)
+            new_mp4s = []
+            mp4s = []
+            new_isos = []
+            isos = []
+            for root, dirnames, filenames in os.walk(target_path):
+                for filename in filenames:
+                    if filename.lower().endswith(".mp4"): # find mp4s
+                        barcode = filename.replace(".mp4", "")  # remove extension to make NEW barcode
+                        new_mp4s.append(barcode)
+                        if '-' in filename: # If there are multiple mp4 files
+                            x = pattern.search(barcode) # Find the exact barcode match
+                            if x: # If there is an exact match
+                                y = x.group(0) # Create new var with exact match str
+                                new_iso = os.path.join(target_path, y + ".iso") # Append .iso to trick program
+                                new_isos.append(new_iso) # Add to temp list.
+                        else: # If there is only 1 mp4 file
+                            new_iso= filename.replace('.mp4', '.iso') # Replace extension
+                            new_isos.append(os.path.join(target_path, new_iso)) # Add to temp list
+
+                    for unique in new_isos: # Filter out duplicates
+                        if unique not in isos:
+                            isos.append(unique) # New list of unique mp4 file paths
+
+                    for iso in isos: # Check for iso files
+                        if not os.path.exists(iso): # Check exact file path matches
+                            print("No .iso files found for {}".format(barcode))
+
+            for barcode in new_mp4s: # Eliminate duplicate mp4s
+                if barcode not in mp4s: # Then proceed to validation process
+                    dip_exists = confirm_dip(row, target_path, barcode, "mp4")
+                    if dip_exists and not validation_off:
+                        dip_filepath = os.path.join(target_path, "{}.mp4".format(barcode))
+                        validate_using_ffmpeg(dip_filepath, accession_number)
 
         else:
             audio_track = os.path.join(target_path, "track01.cda")
