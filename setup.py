@@ -4,7 +4,7 @@ with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
 setup(
-    name='bhl_born_digitial_utils',
+    name='bhl_born_digital_utils',
     version='0.0.1',
     url='https://github.com/bentley-historical-library/bhl_born_digital_utils',
     author='Bentley Historical Library',
