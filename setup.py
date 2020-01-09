@@ -7,5 +7,6 @@ setup(
     author='Bentley Historical Library',
     packages=find_packages(),
     scripts=['bhl_bd_utils.py'],
+    include_package_data=True,
     description='Bentley Historical Library born-digital utilities'
 )
