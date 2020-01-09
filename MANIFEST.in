@@ -1,0 +1,2 @@
+include bhl_born_digital_utils/lib/base_64_logo.txt
+include bhl_born_digital_utils/lib/notice_html_template.html
