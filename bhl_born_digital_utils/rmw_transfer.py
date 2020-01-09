@@ -2,8 +2,6 @@ import os
 import pathlib
 import shutil
 
-from PIL import Image, ImageEnhance
-
 # Reference
 # https://stackoverflow.com/questions/8114355/loop-until-a-specific-user-input
 # https://stackoverflow.com/questions/13654122/how-to-make-python-get-the-username-in-windows-and-then-implement-it-in-a-script
@@ -61,19 +59,21 @@ def delete_webcam_files(webcam_dir):
     print("The webcam directory contains existing files")
     if len(os.listdir(webcam_dir)) < 10:
         for filename in os.listdir(webcam_dir):
-            print(filename)
+            if filename.lower().endswith("jpg"):
+                print(filename)
     else:
         print("The directory has more than ten files. Open {} to check what they are.".format(webcam_dir))
     delete_them = input("Do you want to delete these images? (y/n): ")
     if delete_them.lower().strip() in ["y", "yes"]:
         for root, _, filenames in os.walk(webcam_dir):
             for filename in filenames:
-                filepath = os.path.join(root, filename)
-                print("Deleting {}".format(filepath))
-                try:
-                    os.remove(filepath)
-                except OSError:
-                    print("Could not delete {}".format(filepath))
+                if filename.lower().endswith("jpg"):
+                    filepath = os.path.join(root, filename)
+                    print("Deleting {}".format(filepath))
+                    try:
+                        os.remove(filepath)
+                    except OSError:
+                        print("Could not delete {}".format(filepath))
         print("Files in the webcam directory have been deleted.")
     else:
         print("Any JPG files in the webcam folder will be included in the bhl_metadata folder.")
@@ -92,11 +92,6 @@ def check_webcam_dir(webcam_dir):
         return True
 
 
-def move_and_post_process_images(webcam_dir, bhl_metadata_dir, workstation):
-    move_images(webcam_dir, bhl_metadata_dir)
-    post_process_images(bhl_metadata_dir, workstation)
-
-
 def move_images(webcam_dir, bhl_metadata_dir):
     counter = 0
     for root, dirnames, filenames in os.walk(webcam_dir):
@@ -109,29 +104,18 @@ def move_images(webcam_dir, bhl_metadata_dir):
                 counter += 1
 
 
-def post_process_images(bhl_metadata_dir, workstation):
-    for filename in os.listdir(bhl_metadata_dir):
-        if filename.endswith("jpg"):
-            image_path = os.path.join(bhl_metadata_dir, filename)
-            thumb_image = Image.open(image_path)
-            if workstation == 1:
-                thumb_image.resize((1067, 600)).crop((133, 0, 933, 600))
-            thumb_image = ImageEnhance.Brightness(thumb_image).enhance(1.5)
-            thumb_image.save(image_path)
-            print("Processed image {}".format(filename))
-
-
-def get_bhl_metadata_images(src_path, workstation, barcode):
+def get_bhl_metadata_images(src_path, barcode):
     user_directory = pathlib.Path.home()
-    webcam_dir = os.path.join(user_directory, "Pictures", "Logitech Webcam")
+    webcam_dir = os.path.join(user_directory, "Pictures", "Camera Roll")
     bhl_metadata_dir = os.path.join(src_path, barcode, "bhl_metadata")
     # check if the webcam directory has images from a previous session
-    if len(os.listdir(webcam_dir)) > 0:
+    existing_files = os.listdir(webcam_dir)
+    if any([filename for filename in existing_files if filename.lower().endswith("jpg")]):
         delete_webcam_files(webcam_dir)
 
     images_exist = check_webcam_dir(webcam_dir)
     if images_exist:
-        move_and_post_process_images(webcam_dir, bhl_metadata_dir, workstation)
+        move_images(webcam_dir, bhl_metadata_dir)
 
 
 def create_notice(src_path, barcode):
@@ -156,12 +140,12 @@ def create_notice(src_path, barcode):
     print("Created notice of removable media for {}.".format(barcode))
 
 
-def create_rmw_transfer(src_path, workstation, metadata_off, notices_off):
+def create_rmw_transfer(src_path, metadata_off, notices_off):
     barcode = get_barcode()
     create_barcode_dir(src_path, barcode)
     if not metadata_off:
         create_bhl_metadata_dir(src_path, barcode)
-        get_bhl_metadata_images(src_path, workstation, barcode)
+        get_bhl_metadata_images(src_path, barcode)
 
     if not notices_off:
         create_bhl_notices_dir(src_path)
@@ -169,4 +153,4 @@ def create_rmw_transfer(src_path, workstation, metadata_off, notices_off):
 
     create_another_transfer = input("Do you have more removable media to transfer? (y/n): ")
     if create_another_transfer.lower().strip() in ["y", "yes"]:
-        create_rmw_transfer(src_path, workstation, metadata_off, notices_off)
+        create_rmw_transfer(src_path, metadata_off, notices_off)

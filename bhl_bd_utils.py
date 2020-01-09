@@ -19,7 +19,6 @@ def main():
     parser.add_argument("input", help="Input directory")
 
     parser.add_argument("-c", "--create_transfer", action="store_true", help="Create a RMW transfer")
-    parser.add_argument("--rmw", type=int, choices=range(1, 3), help="Removable Media Workstation (RMW) number")
     parser.add_argument("--metadata_off", action="store_true", help="Turn off creating bhl_metadata")
     parser.add_argument("--notices_off", action="store_true", help="Turn off creating bhl_notices")
 
@@ -53,10 +52,7 @@ def main():
     args = parser.parse_args()
 
     if args.create_transfer:
-        if not args.rmw:
-            print("Please pass a Removable Media Workstation number [--rmw]")
-            sys.exit()
-        create_rmw_transfer(args.input, args.rmw, args.metadata_off, args.notices_off)
+        create_rmw_transfer(args.input, args.metadata_off, args.notices_off)
     if args.empty:
         check_empty_folder_file(args.input)
     if args.missing:
