@@ -1,8 +1,5 @@
 from setuptools import setup, find_packages
 
-with open('requirements.txt') as f:
-    requirements = f.read().splitlines()
-
 setup(
     name='bhl_born_digital_utils',
     version='0.0.1',
@@ -10,6 +7,5 @@ setup(
     author='Bentley Historical Library',
     packages=find_packages(),
     scripts=['bhl_bd_utils.py'],
-    description='Bentley Historical Library born-digital utilities',
-    install_requires=requirements
+    description='Bentley Historical Library born-digital utilities'
 )
