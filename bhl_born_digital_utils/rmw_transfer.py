@@ -2,6 +2,8 @@ import os
 import pathlib
 import shutil
 
+from PIL import Image
+
 # Reference
 # https://stackoverflow.com/questions/8114355/loop-until-a-specific-user-input
 # https://stackoverflow.com/questions/13654122/how-to-make-python-get-the-username-in-windows-and-then-implement-it-in-a-script
@@ -92,6 +94,11 @@ def check_webcam_dir(webcam_dir):
         return True
 
 
+def move_and_post_process_images(webcam_dir, bhl_metadata_dir):
+    move_images(webcam_dir, bhl_metadata_dir)
+    post_process_images(bhl_metadata_dir)
+
+
 def move_images(webcam_dir, bhl_metadata_dir):
     counter = 0
     for root, dirnames, filenames in os.walk(webcam_dir):
@@ -102,6 +109,17 @@ def move_images(webcam_dir, bhl_metadata_dir):
                 shutil.move(image_src_path, image_dst_path)
                 print("Moved {} to {}".format(image_src_path, image_dst_path))
                 counter += 1
+
+
+def post_process_images(bhl_metadata_dir):
+    for filename in os.listdir(bhl_metadata_dir):
+        if filename.endswith("jpg"):
+            image_path = os.path.join(bhl_metadata_dir, filename)
+            img = Image.open(image_path)
+            area = (880, 0, 3100, 1675)
+            img = img.crop(area)
+            img.save(image_path)
+            print("Processed image {}".format(filename))
 
 
 def get_bhl_metadata_images(src_path, barcode):
@@ -115,7 +133,7 @@ def get_bhl_metadata_images(src_path, barcode):
 
     images_exist = check_webcam_dir(webcam_dir)
     if images_exist:
-        move_images(webcam_dir, bhl_metadata_dir)
+        move_and_post_process_images(webcam_dir, bhl_metadata_dir)
 
 
 def create_notice(src_path, barcode):
