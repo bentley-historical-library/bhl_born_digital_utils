@@ -11,7 +11,7 @@ Scripts and templates used for born-digital transfers at the Bentley Historical 
 - rsync: To copy files on non-Windows machines
 
 ## Installation
-pip install git+https://github.com/bentley-historical-library/bhl_born_digital_utils.git
+`pip install git+https://github.com/bentley-historical-library/bhl_born_digital_utils.git`
 
 ## bhl_inventory.csv
 A tracking template used for born-digital transfers at the Bentley Historical Library. Many of the utilities detailed below rely on the bhl_inventory.csv. See [README for bhl_inventory.csv](bhl_inventory/README.md).
