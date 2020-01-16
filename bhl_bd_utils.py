@@ -57,7 +57,7 @@ def main():
 
     action_args.add_argument("--rename_files", action="store_true", help="Rename files with invalid characters")
 
-    action_args.add_argument("--dips", action="store_true" help="Make DIPs")
+    action_args.add_argument("--dips", action="store_true", help="Make DIPs")
 
     args = parser.parse_args()
 
