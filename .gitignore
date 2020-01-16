@@ -2,3 +2,6 @@ __pycache__
 venv
 .vscode
 logs
+build/
+dist/
+*.egg-info
