@@ -10,6 +10,7 @@ setup(
     author='Bentley Historical Library',
     packages=find_packages(),
     scripts=['bhl_bd_utils.py'],
+    data_files=[('bhl_inventory', ['bhl_inventory/bhl_inventory.csv'])],
     include_package_data=True,
     description='Bentley Historical Library born-digital utilities',
     install_requires=requirements
