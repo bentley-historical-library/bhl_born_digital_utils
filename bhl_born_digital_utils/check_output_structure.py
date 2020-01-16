@@ -14,7 +14,8 @@ import re
 # https://stackoverflow.com/questions/4117530/sys-argv1-meaning-in-script
 # http://openpreservation.org/blog/2017/01/04/breaking-waves-and-some-flacs/
 
-def check_output_structure(src_path, validation_off):
+
+def check_output_structure(src_path, validation_off, logs_dir):
     target_lists = get_targets(src_path)
     for media_type in target_lists.keys():
         check_structure(src_path, validation_off, target_lists[media_type], media_type)
@@ -43,7 +44,7 @@ def get_targets(src_path):
     return target_lists
 
 
-def check_structure(src_path, validation_off, target_list, media_type):
+def check_structure(src_path, validation_off, target_list, media_type, logs_dir):
 
     for row in target_list:
         accession_number = os.path.split(src_path)[-1]
@@ -62,7 +63,7 @@ def check_structure(src_path, validation_off, target_list, media_type):
             dip_exists = confirm_dip(row, target_path, barcode, "wav")
             if not validation_off and len(wavs) > 0:
                 for wav in wavs:
-                    validate_using_ffmpeg(wav, accession_number)
+                    validate_using_ffmpeg(wav, accession_number, logs_dir)
 
         elif media_type == "video":
             new_mp4s = []
@@ -97,7 +98,7 @@ def check_structure(src_path, validation_off, target_list, media_type):
                     dip_exists = confirm_dip(row, target_path, barcode, "mp4")
                     if dip_exists and not validation_off:
                         dip_filepath = os.path.join(target_path, "{}.mp4".format(barcode))
-                        validate_using_ffmpeg(dip_filepath, accession_number)
+                        validate_using_ffmpeg(dip_filepath, accession_number, logs_dir)
 
         else:
             audio_track = os.path.join(target_path, "track01.cda")
@@ -125,9 +126,9 @@ def confirm_dip(row, target_path, barcode, extension):
         return False
 
 
-def validate_using_ffmpeg(media_path, accession_number):
+def validate_using_ffmpeg(media_path, accession_number, logs_dir):
     ffmpeg_path = get_ffmpeg_path()
-    log_path = get_log_path(media_path, accession_number)
+    log_path = get_log_path(media_path, accession_number, logs_dir)
     print("Validating {}".format(media_path))
     cmd = "{0} -loglevel error -i \"{1}\" -f null - 2>\"{2}\"".format(ffmpeg_path, media_path, log_path)
     subprocess.check_call(cmd, shell=True)
@@ -145,10 +146,8 @@ def get_ffmpeg_path():
         return "ffmpeg"
 
 
-def get_log_path(media_path, accession_number):
+def get_log_path(media_path, accession_number, logs_dir):
     media_filename = os.path.split(media_path)[-1]
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    logs_dir = os.path.join(base_dir, "logs")
     if not os.path.exists(logs_dir):
         os.mkdir(logs_dir)
     accession_dir = os.path.join(logs_dir, accession_number)

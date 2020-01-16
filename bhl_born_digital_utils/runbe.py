@@ -1,17 +1,15 @@
 import csv
 import os
-import platform
 import shutil
 import subprocess
 
+from bhl_born_digital_utils.config import get_config_setting
+
 
 def get_bulk_extractor_command(source, output):
-    if "windows" in platform.platform().lower():
-        be_exe = r"C:\BHL\Utilities\Bulk Extractor 1.6.0-dev\bulk_extractor.exe"
-    else:
-        be_exe = "bulk_extractor"
+    be_path = get_config_setting("bulk_extractor", default="bulk_extractor")
     command = [
-            be_exe, "-S ssn_mode=1", 
+            be_path, "-S ssn_mode=1", 
             "-E", "accts", "-x", "exif",
             "-o", output, "-R", source
             ]
@@ -75,10 +73,8 @@ def parse_results(be_logs_dir):
         print("Check the results for each item in {}".format(be_logs_dir))
 
 
-def run_bulk_extractor(src):
+def run_bulk_extractor(src, logs_dir):
     accession_number = os.path.split(src)[-1]
-    base_dir = os.path.dirname(os.path.dirname(__file__))
-    logs_dir = os.path.join(base_dir, "logs")
     if not os.path.exists(logs_dir):
         os.mkdir(logs_dir)
     accession_dir = os.path.join(logs_dir, accession_number)

@@ -1,8 +1,9 @@
 import os
-import pathlib
 import shutil
 
 from PIL import Image
+
+from bhl_born_digital_utils.config import get_config_setting
 
 # Reference
 # https://stackoverflow.com/questions/8114355/loop-until-a-specific-user-input
@@ -123,8 +124,7 @@ def post_process_images(bhl_metadata_dir):
 
 
 def get_bhl_metadata_images(src_path, barcode):
-    user_directory = pathlib.Path.home()
-    webcam_dir = os.path.join(user_directory, "Pictures", "Camera Roll")
+    webcam_dir = get_config_setting("webcam_dir")
     bhl_metadata_dir = os.path.join(src_path, barcode, "bhl_metadata")
     # check if the webcam directory has images from a previous session
     existing_files = os.listdir(webcam_dir)
@@ -158,7 +158,7 @@ def create_notice(src_path, barcode):
     print("Created notice of removable media for {}.".format(barcode))
 
 
-def create_rmw_transfer(src_path, metadata_off, notices_off):
+def add_removable_media(src_path, metadata_off, notices_off):
     barcode = get_barcode()
     create_barcode_dir(src_path, barcode)
     if not metadata_off:
@@ -171,4 +171,9 @@ def create_rmw_transfer(src_path, metadata_off, notices_off):
 
     create_another_transfer = input("Do you have more removable media to transfer? (y/n): ")
     if create_another_transfer.lower().strip() in ["y", "yes"]:
-        create_rmw_transfer(src_path, metadata_off, notices_off)
+        add_removable_media(src_path, metadata_off, notices_off)
+
+
+def create_rmw_transfer(src_path, metadata_off, notices_off):
+    check_and_create_dir(src_path)
+    add_removable_media(src_path, metadata_off, notices_off)
