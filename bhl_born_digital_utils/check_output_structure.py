@@ -1,8 +1,9 @@
 import csv
 import os
 import subprocess
-import sys
 import re
+
+from bhl_born_digital_utils.config import get_config_setting
 
 # Reference
 # https://stackoverflow.com/questions/33344413/why-is-my-for-loop-skipping-an-element-in-my-list
@@ -18,7 +19,7 @@ import re
 def check_output_structure(src_path, validation_off, logs_dir):
     target_lists = get_targets(src_path)
     for media_type in target_lists.keys():
-        check_structure(src_path, validation_off, target_lists[media_type], media_type)
+        check_structure(src_path, validation_off, target_lists[media_type], media_type, logs_dir)
 
 
 def get_targets(src_path):
@@ -45,7 +46,6 @@ def get_targets(src_path):
 
 
 def check_structure(src_path, validation_off, target_list, media_type, logs_dir):
-
     for row in target_list:
         accession_number = os.path.split(src_path)[-1]
         barcode = row.get("barcode").strip()
@@ -82,7 +82,7 @@ def check_structure(src_path, validation_off, target_list, media_type, logs_dir)
                                 new_iso = os.path.join(target_path, y + ".iso") # Append .iso to trick program
                                 new_isos.append(new_iso) # Add to temp list.
                         else: # If there is only 1 mp4 file
-                            new_iso= filename.replace('.mp4', '.iso') # Replace extension
+                            new_iso = filename.replace('.mp4', '.iso') # Replace extension
                             new_isos.append(os.path.join(target_path, new_iso)) # Add to temp list
 
                     for unique in new_isos: # Filter out duplicates
@@ -115,19 +115,18 @@ def check_structure(src_path, validation_off, target_list, media_type, logs_dir)
 
 
 def confirm_dip(row, target_path, barcode, extension):
-    if row.get("made_dip").lower().strip() in ["y", "yes"]:
-        dip_filepath = os.path.join(target_path, "{}.{}".format(barcode, extension))
-        if not os.path.exists(dip_filepath):
-            print("No DIP file found for {}".format(barcode))
-            return False
-        else:
-            return True
+    dip_filepath = os.path.join(target_path, "{}.{}".format(barcode, extension))
+    if row.get("made_dip").lower().strip() in ["y", "yes"] and not os.path.exists(dip_filepath):
+        print("No DIP file found for {}".format(barcode))
+        return False
+    elif os.path.exists(dip_filepath):
+        return True
     else:
         return False
 
 
 def validate_using_ffmpeg(media_path, accession_number, logs_dir):
-    ffmpeg_path = get_ffmpeg_path()
+    ffmpeg_path = get_config_setting("ffmpeg", default="ffmpeg")
     log_path = get_log_path(media_path, accession_number, logs_dir)
     print("Validating {}".format(media_path))
     cmd = "{0} -loglevel error -i \"{1}\" -f null - 2>\"{2}\"".format(ffmpeg_path, media_path, log_path)
@@ -136,14 +135,6 @@ def validate_using_ffmpeg(media_path, accession_number, logs_dir):
         print("{} passed ffmpeg validation.".format(media_path))
     else:
         print("{} failed ffmpeg validation. See {} for details".format(media_path, log_path))
-
-
-def get_ffmpeg_path():
-    # update this to read from a config, take an argument, check if ffmpeg exists on path, etc.
-    if "win" in sys.platform:
-        return r"C:\BHL\Utilities\ffmpeg\bin\ffmpeg.exe"
-    else:
-        return "ffmpeg"
 
 
 def get_log_path(media_path, accession_number, logs_dir):
