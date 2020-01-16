@@ -176,4 +176,10 @@ def add_removable_media(src_path, metadata_off, notices_off):
 
 def create_rmw_transfer(src_path, metadata_off, notices_off):
     check_and_create_dir(src_path)
+    bhl_inventory = os.path.join(src_path, "bhl_inventory.csv")
+    if not os.path.exists(bhl_inventory):
+        base_dir = os.path.abspath(os.path.dirname(__file__))
+        bhl_inventory_template = os.path.join(base_dir, "lib", "bhl_inventory", "bhl_inventory.csv")
+        shutil.copy(bhl_inventory_template, bhl_inventory)
+        print("Copied bhl_inventory.csv to {}".format(src_path))
     add_removable_media(src_path, metadata_off, notices_off)
