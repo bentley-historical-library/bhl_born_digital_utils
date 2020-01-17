@@ -1,8 +1,9 @@
 import csv
 import os
 import subprocess
-import sys
 import re
+
+from bhl_born_digital_utils.config import get_config_setting
 
 # Reference
 # https://stackoverflow.com/questions/33344413/why-is-my-for-loop-skipping-an-element-in-my-list
@@ -14,10 +15,11 @@ import re
 # https://stackoverflow.com/questions/4117530/sys-argv1-meaning-in-script
 # http://openpreservation.org/blog/2017/01/04/breaking-waves-and-some-flacs/
 
-def check_output_structure(src_path, validation_off):
+
+def check_output_structure(src_path, validation_off, logs_dir):
     target_lists = get_targets(src_path)
     for media_type in target_lists.keys():
-        check_structure(src_path, validation_off, target_lists[media_type], media_type)
+        check_structure(src_path, validation_off, target_lists[media_type], media_type, logs_dir)
 
 
 def get_targets(src_path):
@@ -43,8 +45,7 @@ def get_targets(src_path):
     return target_lists
 
 
-def check_structure(src_path, validation_off, target_list, media_type):
-
+def check_structure(src_path, validation_off, target_list, media_type, logs_dir):
     for row in target_list:
         accession_number = os.path.split(src_path)[-1]
         barcode = row.get("barcode").strip()
@@ -62,7 +63,7 @@ def check_structure(src_path, validation_off, target_list, media_type):
             dip_exists = confirm_dip(row, target_path, barcode, "wav")
             if not validation_off and len(wavs) > 0:
                 for wav in wavs:
-                    validate_using_ffmpeg(wav, accession_number)
+                    validate_using_ffmpeg(wav, accession_number, logs_dir)
 
         elif media_type == "video":
             new_mp4s = []
@@ -81,7 +82,7 @@ def check_structure(src_path, validation_off, target_list, media_type):
                                 new_iso = os.path.join(target_path, y + ".iso") # Append .iso to trick program
                                 new_isos.append(new_iso) # Add to temp list.
                         else: # If there is only 1 mp4 file
-                            new_iso= filename.replace('.mp4', '.iso') # Replace extension
+                            new_iso = filename.replace('.mp4', '.iso') # Replace extension
                             new_isos.append(os.path.join(target_path, new_iso)) # Add to temp list
 
                     for unique in new_isos: # Filter out duplicates
@@ -97,7 +98,7 @@ def check_structure(src_path, validation_off, target_list, media_type):
                     dip_exists = confirm_dip(row, target_path, barcode, "mp4")
                     if dip_exists and not validation_off:
                         dip_filepath = os.path.join(target_path, "{}.mp4".format(barcode))
-                        validate_using_ffmpeg(dip_filepath, accession_number)
+                        validate_using_ffmpeg(dip_filepath, accession_number, logs_dir)
 
         else:
             audio_track = os.path.join(target_path, "track01.cda")
@@ -114,22 +115,21 @@ def check_structure(src_path, validation_off, target_list, media_type):
 
 
 def confirm_dip(row, target_path, barcode, extension):
-    if row.get("made_dip").lower().strip() in ["y", "yes"]:
-        dip_filepath = os.path.join(target_path, "{}.{}".format(barcode, extension))
-        if not os.path.exists(dip_filepath):
-            print("No DIP file found for {}".format(barcode))
-            return False
-        else:
-            return True
+    dip_filepath = os.path.join(target_path, "{}.{}".format(barcode, extension))
+    if row.get("made_dip").lower().strip() in ["y", "yes"] and not os.path.exists(dip_filepath):
+        print("No DIP file found for {}".format(barcode))
+        return False
+    elif os.path.exists(dip_filepath):
+        return True
     else:
         return False
 
 
-def validate_using_ffmpeg(media_path, accession_number):
-    ffmpeg_path = get_ffmpeg_path()
-    log_path = get_log_path(media_path, accession_number)
+def validate_using_ffmpeg(media_path, accession_number, logs_dir):
+    ffmpeg_path = get_config_setting("ffmpeg", default="ffmpeg")
+    log_path = get_log_path(media_path, accession_number, logs_dir)
     print("Validating {}".format(media_path))
-    cmd = "{0} -loglevel error -i \"{1}\" -f null - 2>\"{2}\"".format(ffmpeg_path, media_path, log_path)
+    cmd = "\"{0}\" -loglevel error -i \"{1}\" -f null - 2>\"{2}\"".format(ffmpeg_path, media_path, log_path)
     subprocess.check_call(cmd, shell=True)
     if os.path.getsize(log_path) == 0:
         print("{} passed ffmpeg validation.".format(media_path))
@@ -137,18 +137,8 @@ def validate_using_ffmpeg(media_path, accession_number):
         print("{} failed ffmpeg validation. See {} for details".format(media_path, log_path))
 
 
-def get_ffmpeg_path():
-    # update this to read from a config, take an argument, check if ffmpeg exists on path, etc.
-    if "win" in sys.platform:
-        return r"C:\BHL\Utilities\ffmpeg\bin\ffmpeg.exe"
-    else:
-        return "ffmpeg"
-
-
-def get_log_path(media_path, accession_number):
+def get_log_path(media_path, accession_number, logs_dir):
     media_filename = os.path.split(media_path)[-1]
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    logs_dir = os.path.join(base_dir, "logs")
     if not os.path.exists(logs_dir):
         os.mkdir(logs_dir)
     accession_dir = os.path.join(logs_dir, accession_number)

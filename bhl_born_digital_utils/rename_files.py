@@ -9,7 +9,10 @@ REPLACEMENT_CHAR = "_"
 
 def rename_files(src_path):
     dirs_to_rename, files_to_rename = get_targets(src_path)
-    confirm_renaming(dirs_to_rename, files_to_rename)
+    if len(dirs_to_rename) > 0 or len(files_to_rename) > 0:
+        confirm_renaming(dirs_to_rename, files_to_rename)
+    else:
+        print("No targets to rename were found")
 
 
 def get_targets(src_path):
@@ -43,15 +46,18 @@ def recursively_get_targets(src_path):
 
 
 def confirm_renaming(dirs_to_rename, files_to_rename):
-    print("*** DIRECTORIES WILL BE RENAMED AS FOLLOWS ***")
-    for old_path, sanitized_path in dirs_to_rename:
-        print("{} --> {}".format(old_path, sanitized_path))
-    print("\n\n")
-    print("*** FILES WILL BE RENAMED AS FOLLOWS ***")
-    for old_path, sanitized_path in files_to_rename:
-        print("{} --> {}".format(old_path, sanitized_path))
+    if len(dirs_to_rename) > 0:
+        print("*** DIRECTORIES WILL BE RENAMED AS FOLLOWS ***")
+        for old_path, sanitized_path in dirs_to_rename:
+            print("{} --> {}".format(old_path, sanitized_path))
+        print("\n\n")
+    if len(files_to_rename) > 0:
+        print("*** FILES WILL BE RENAMED AS FOLLOWS ***")
+        for old_path, sanitized_path in files_to_rename:
+            print("{} --> {}".format(old_path, sanitized_path))
+        print("\n\n")
 
-    confirm_rename = input("Rename files? (y/n): ")
+    confirm_rename = input("Rename files and/or directories? (y/n): ")
     if confirm_rename.lower().strip() in ["y", "yes"]:
         # reverse the lists so that files and directories deeper in the tree get renamed first
         dirs_to_rename.reverse()
