@@ -16,6 +16,7 @@ from bhl_born_digital_utils.move_separations import move_separations
 from bhl_born_digital_utils.separate_av_media import separate_av_media
 from bhl_born_digital_utils.rename_files import rename_files
 from bhl_born_digital_utils.make_dips import make_dips
+from bhl_born_digital_utils.run_brunnhilde import run_brunnhilde
 
 
 def main():
@@ -60,6 +61,8 @@ def main():
     action_args.add_argument("--rename_files", action="store_true", help="Rename files with invalid characters")
 
     action_args.add_argument("--dips", action="store_true", help="Make DIPs")
+
+    action_args.add_argument("--brunnhilde", action="store_true", help="Run Brunnhilde (Linux only)")
 
     args = parser.parse_args()
 
@@ -119,6 +122,8 @@ def main():
         rename_files(accession_dir)
     if args.dips:
         make_dips(accession_dir)
+    if args.brunnhilde:
+        run_brunnhilde(accession_dir, accession_number)
 
 
 if __name__ == "__main__":

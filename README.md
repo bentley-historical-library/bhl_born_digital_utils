@@ -9,6 +9,7 @@ Scripts and templates used for born-digital transfers at the Bentley Historical 
 - HandBrake CLI: To create DIPs for video DVDs
 - bulk_extractor: To scan for PII
 - rsync: To copy files on non-Windows machines
+- Brunnhilde: To generate reports (non-Windows machines only)
 
 ## Installation
 `pip install git+https://github.com/bentley-historical-library/bhl_born_digital_utils.git`
@@ -35,6 +36,7 @@ Usage: `bhl_bd_utils.py ACCESSION_NUMBER action [options]`
 | --av_media | Separate AV media |
 | --rename_files | Rename files with invalid characters |
 | --dips | Make DIPs for audio CDs and video DVDs |
+| --brunnhilde | Run Brunnhilde |
 
 
 ### BHL Born Digital Utils Configuration
@@ -51,6 +53,7 @@ Many of born-digital transfer utilities make use of a `.bhl_bd_utils` configurat
 | handbrake_preset | Full path to a HandBrake preset JSON file |
 | ffmpeg | Full path to an installed FFmpeg executable |
 | bulk_extractor | Full path to an installed bulk_extractor executable |
+| brunnhilde | Directory where Brunnhilde reports will be stored |
 
 Some of these settings can be overriden from the command line. For example, an `-i` flag can be passed along with the path to a directory to override the configured input directory. Below are the optional arguments that can be passed to `bhl_bd_utils.py` and the configuration default that they override.
 
@@ -188,7 +191,7 @@ This utility replaces 'invalid' characters in a filename with an underscore. The
 | ACCESSION_NUMBER | The accession number |
 | --rename_files | Rename files |
 
-## make_dips.py
+## Make DIPs
 This utility makes access derivatives (DIPs) for audio CDs and video DVDs to be uploaded to the Bentley Digital Media Library. Its primary use case is to make DIPs in batch for media transferred using the RipStation, but can also be used for media transferred using the RMWs. The utility parses the bhl_inventory.csv in a given accession directory to identify all audio CDs and video DVDs that have (1) been successfully transferred and (2) do not have an existing access derivative. The utility then does the following depending on the media type:
 
 - Audio CD: Concatenates all of the individual `.wav` tracks from an audio CD into a single `[barcode].wav` file using FFmpeg. On Windows machines, the utility uses the `ffmpeg` configuration setting, corresponding to an exact path to an FFmpeg executable, and on other operating systems assumes that `ffmpeg` is available on the system path.
@@ -200,3 +203,15 @@ This utility makes access derivatives (DIPs) for audio CDs and video DVDs to be 
 | --- | --- |
 | ACCESSION_NUMBER | The accession number |
 | --dips | Make DIPs |
+
+## Run Brunnhilde
+This utility runs [Brunnhilde](https://github.com/tw4l/brunnhilde) to generate reports on the contents of a given transfer. The utility is configured to run Brunnhilde with the `-z` (decompress and scan archived files) and `-n` (skip virus scan) options. The outputs of this scan include a CSV output from Siegfried, a tree report of the transfer's directory structure, and an HTML report with aggregate statistics for the transfer including detailed information about file formats, unidentified files, last modified dates, and duplicate files. Reports will be output to the configured `brunnhilde` directory and will be copied to the transfer's `metadata\submissionDocumentation` directory once Brunnhilde has finished.
+
+This utility can only be run from a Linux or macOS machine.
+
+`bhl_bd_utils.py ACCESSION_NUMBER --brunnhilde`
+
+| Argument | Help |
+| --- | --- |
+| ACCESSION_NUMBER | The accession number |
+| --brunnhilde | Run Brunnhilde |

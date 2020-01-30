@@ -65,11 +65,19 @@ def _create_config(config, config_file):
         print("bulk_extractor is used to scan for PII")
         be_path_input = input("Enter the path to the bulk_extractor.exe for Windows machines: ")
         be_path = _normalize_input(be_path_input)
+
+        brunnhilde_dir = ""
     else:
         # assumes these are available on the system path for other OS's
         handbrake_path = "HandBrakeCLI"
         ffmpeg_path = "ffmpeg"
         be_path = "bulk_extractor"
+
+        # we will only be using Brunnhilde on non-Windows OS's
+        print("\n\n")
+        print("Brunnhilde is used to generate file format and checksum information for transfers")
+        brunnhilde_dir_input = input("Enter the directory where Brunnhilde reports will be saved: ")
+        brunnhilde_dir = _normalize_input(brunnhilde_dir_input)
 
     print("\n\n")
     print("The HandBrake CLI requires a preset file to generate derivatives")
@@ -92,6 +100,7 @@ def _create_config(config, config_file):
     config.set("defaults", "handbrake_preset", handbrake_preset)
     config.set("defaults", "ffmpeg", ffmpeg_path)
     config.set("defaults", "bulk_extractor", be_path)
+    config.set("defaults", "brunnhilde", brunnhilde_dir)
     _save_config(config, config_file)
 
 
