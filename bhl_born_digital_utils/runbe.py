@@ -52,7 +52,7 @@ def get_targets(src):
     return targets
 
 
-def parse_results(be_logs_dir):
+def parse_results(src, be_logs_dir):
     for barcode in os.listdir(be_logs_dir):
         barcode_path = os.path.join(be_logs_dir, barcode)
         for filename in os.listdir(barcode_path):
@@ -67,10 +67,13 @@ def parse_results(be_logs_dir):
         print("No bulk_extractor results found.")
         shutil.rmtree(be_logs_dir)
     else:
+        metadata_dir = os.path.join(src, "metadata", "submissionDocumentation")
+        dst_dir = os.path.join(metadata_dir, "bulk_extractor")
+        shutil.copytree(be_logs_dir, dst_dir)
         print("bulk_extractor results found for the following items:")
         for barcode in os.listdir(be_logs_dir):
             print(barcode)
-        print("Check the results for each item in {}".format(be_logs_dir))
+        print("Check the results for each item in {}".format(dst_dir))
 
 
 def run_bulk_extractor(src, logs_dir):
@@ -89,4 +92,4 @@ def run_bulk_extractor(src, logs_dir):
         output = os.path.join(be_logs_dir, target)
         command = get_bulk_extractor_command(source, output)
         subprocess.call(command)
-    parse_results(be_logs_dir)
+    parse_results(src, be_logs_dir)
