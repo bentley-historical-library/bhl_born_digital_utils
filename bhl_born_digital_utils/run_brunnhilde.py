@@ -1,3 +1,5 @@
+import os
+import shutil
 import subprocess
 import sys
 
@@ -15,3 +17,11 @@ def run_brunnhilde(src, accession_number):
         ]
 
         subprocess.call(cmd)
+
+        transfer_metadata_dir = os.path.join(src, "metadata", "submissionDocumentation")
+        if not os.path.exists(transfer_metadata_dir):
+            os.makedirs(transfer_metadata_dir)
+
+        brunnhilde_reports = os.path.join(brunnhilde_dir, accession_number)
+        dst_dir = os.path.join(transfer_metadata_dir, "brunnhilde")
+        shutil.copytree(brunnhilde_reports, dst_dir)
