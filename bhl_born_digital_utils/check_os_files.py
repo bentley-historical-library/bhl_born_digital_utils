@@ -56,20 +56,33 @@ def confirm_deletion(src_path, target_list, target_names, target_type):
 
     confirmation = input("\nDo you want to delete all of the above {}? ".format(target_type))
     if confirmation.lower().strip() in ["y", "yes"]:
-        delete_targets(target_list, target_type)
+        delete_targets(src_path, target_list, target_type)
 
 
-def delete_targets(target_list, target_type):
+def log_deletion(src_path, deleted_targets, target_type):
+    metadata_dir = os.path.join(src_path, "metadata", "submissionDocumentation")
+    if not os.path.exists(metadata_dir):
+        os.makedirs(metadata_dir)
+    logs_file = os.path.join(metadata_dir, "deleted_system_{}.txt".format(target_type))
+    with open(logs_file, "w") as f:
+        f.write("\n".join(deleted_targets))
+
+
+def delete_targets(src_path, target_list, target_type):
+    deleted_targets = []
     for target in target_list:
         if target_type == "files":
             try:
                 call(["attrib", "-H", "-R", "-S", target], stderr=DEVNULL, stdout=DEVNULL)
                 os.remove(target)
+                deleted_targets.append(target)
             except OSError:
                 print("Failed to delete file: {}".format(target))
         elif target_type == "directories":
             try:
                 shutil.rmtree(target)
+                deleted_targets.append(target)
             except OSError:
                 print("Failed to delete directory: {}".format(target))
     print("Deleted {}".format(target_type))
+    log_deletion(src_path, deleted_targets, target_type)

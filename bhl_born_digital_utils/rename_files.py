@@ -1,3 +1,4 @@
+import csv
 import os
 import re
 import shutil
@@ -10,7 +11,7 @@ REPLACEMENT_CHAR = "_"
 def rename_files(src_path):
     dirs_to_rename, files_to_rename = get_targets(src_path)
     if len(dirs_to_rename) > 0 or len(files_to_rename) > 0:
-        confirm_renaming(dirs_to_rename, files_to_rename)
+        confirm_renaming(src_path, dirs_to_rename, files_to_rename)
     else:
         print("No targets to rename were found")
 
@@ -45,7 +46,23 @@ def recursively_get_targets(src_path):
                 yield result
 
 
-def confirm_renaming(dirs_to_rename, files_to_rename):
+def log_renaming(src_path, renamed_paths):
+    metadata_dir = os.path.join(src_path, "metadata", "submissionDocumentation")
+    if not os.path.exists(metadata_dir):
+        os.makedirs(metadata_dir)
+    logs_file = os.path.join(metadata_dir, "renamed_files_and_directories.csv")
+    if not os.path.exists(logs_file):
+        with open(logs_file, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["original_path", "renamed_path"])
+            writer.writerows(renamed_paths)
+    else:
+        with open(logs_file, "a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerows(renamed_paths)
+
+
+def confirm_renaming(src_path, dirs_to_rename, files_to_rename):
     if len(dirs_to_rename) > 0:
         print("*** DIRECTORIES WILL BE RENAMED AS FOLLOWS ***")
         for old_path, sanitized_path in dirs_to_rename:
@@ -62,12 +79,13 @@ def confirm_renaming(dirs_to_rename, files_to_rename):
         # reverse the lists so that files and directories deeper in the tree get renamed first
         dirs_to_rename.reverse()
         files_to_rename.reverse()
-        rename_paths(files_to_rename)
-        rename_paths(dirs_to_rename)
+        rename_paths(src_path, files_to_rename)
+        rename_paths(src_path, dirs_to_rename)
 
 
-def rename_paths(paths):
+def rename_paths(src_path, paths):
     n = 1
+    renamed_paths = []
     for old_path, new_path in paths:
         dirname = os.path.dirname(old_path)
         basename = os.path.basename(new_path)
@@ -77,3 +95,5 @@ def rename_paths(paths):
             sanitized_path = os.path.join(dirname, filename + REPLACEMENT_CHAR + str(n) + fileext)
             n += 1
         shutil.move(old_path, sanitized_path)
+        renamed_paths.append([old_path, sanitized_path])
+    log_renaming(src_path, renamed_paths)
