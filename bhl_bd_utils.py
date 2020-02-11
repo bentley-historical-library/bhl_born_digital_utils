@@ -17,6 +17,7 @@ from bhl_born_digital_utils.separate_av_media import separate_av_media
 from bhl_born_digital_utils.rename_files import rename_files
 from bhl_born_digital_utils.make_dips import make_dips
 from bhl_born_digital_utils.run_brunnhilde import run_brunnhilde
+from bhl_born_digital_utils.split_transfer import split_transfer
 
 
 def main():
@@ -63,6 +64,9 @@ def main():
     action_args.add_argument("--dips", action="store_true", help="Make DIPs")
 
     action_args.add_argument("--brunnhilde", action="store_true", help="Run Brunnhilde (Linux only)")
+
+    action_args.add_argument("--split_transfer", action="store_true", help="Split transfer into smaller chunks")
+    action_args.add_argument("--split_size", type=int, default=5000, help="Maximum file count for each chunk")
 
     args = parser.parse_args()
 
@@ -124,6 +128,9 @@ def main():
         make_dips(accession_dir)
     if args.brunnhilde:
         run_brunnhilde(accession_dir, accession_number)
+    if args.split_transfer:
+        split_transfer(accession_dir, accession_number, args.split_size)
+
 
 
 if __name__ == "__main__":

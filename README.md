@@ -36,6 +36,7 @@ Usage: `bhl_bd_utils.py ACCESSION_NUMBER action [options]`
 | --av_media | Separate AV media |
 | --rename_files | Rename files with invalid characters |
 | --dips | Make DIPs for audio CDs and video DVDs |
+| --split_transfer | Split transfer into smaller chunks |
 | --brunnhilde | Run Brunnhilde |
 
 
@@ -203,6 +204,17 @@ This utility makes access derivatives (DIPs) for audio CDs and video DVDs to be 
 | --- | --- |
 | ACCESSION_NUMBER | The accession number |
 | --dips | Make DIPs |
+
+## Split Transfer
+This utility splits a transfer into multiple smaller chunks. This is especially useful for transfer with more than 10,000 files, which can cause problems in Archivematica. The utility counts the number of files in each item within a transfer and then moves items into directories of fewer than the split size, which defaults to 5,000 files and can be modified by passing a `--split_size` parameter. The utility keeps individual items whole (i.e., it will not move some subdirectories from one item into chunk and other subdirectories into another chunk). As a result, it is best suited to transfers of many small-to-medium size items, rather than a transfer of one large item (e.g., a single hard drive with 10s of thousands of files). The chunk directories are created inside the transfer directory and are appended with a three-digit sequence. For example, a transfer `172345` with 12,234 files would be split into about 3 chunks: `172345_001`, `172345_002`, `172345_003`
+
+`bhl_bd_utils.py ACCESSION_NUMBER --split_transfer [--split_size INT]`
+
+| Argument | Help |
+| --- | --- |
+| ACCESSION_NUMBER | The accession number |
+| --split_transfer | Split transfer into smaller chunks |
+| --split_size | Maximum file count for each chunk (optional; defaults to 5,000) |
 
 ## Run Brunnhilde
 This utility runs [Brunnhilde](https://github.com/tw4l/brunnhilde) to generate reports on the contents of a given transfer. The utility is configured to run Brunnhilde with the `-z` (decompress and scan archived files) and `-n` (skip virus scan) options. The outputs of this scan include a CSV output from Siegfried, a tree report of the transfer's directory structure, and an HTML report with aggregate statistics for the transfer including detailed information about file formats, unidentified files, last modified dates, and duplicate files. Reports will be output to the configured `brunnhilde` directory and will be copied to the transfer's `metadata\submissionDocumentation` directory once Brunnhilde has finished.
