@@ -112,15 +112,15 @@ def move_images(webcam_dir, bhl_metadata_dir):
                 counter += 1
 
 
-#def post_process_images(bhl_metadata_dir):
- #   for filename in os.listdir(bhl_metadata_dir):
-  #      if filename.endswith("jpg"):
-   #         image_path = os.path.join(bhl_metadata_dir, filename)
-    #        img = Image.open(image_path)
-     #       area = (880, 0, 3100, 1675)
-      #      img = img.crop(area)
-       #     img.save(image_path)
-        #    print("Processed image {}".format(filename))
+def post_process_images(bhl_metadata_dir):
+    for filename in os.listdir(bhl_metadata_dir):
+        if filename.endswith("jpg"):
+            image_path = os.path.join(bhl_metadata_dir, filename)
+            img = Image.open(image_path)
+            area = (780, 0, 3400, 1800)
+            img = img.crop(area)
+            img.save(image_path)
+            print("Processed image {}".format(filename))
 
 
 def get_bhl_metadata_images(src_path, barcode):
