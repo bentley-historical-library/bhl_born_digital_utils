@@ -21,5 +21,15 @@
     <h3>Barcode:</h3>
     <img id="barcode"/>
     <script type="text/javascript">JsBarcode("#barcode", "{{ BARCODE }}", {format: "codabar", width: "2", margin: "0"});</script>
+    <p> Item was removed by the Archivist for Digital Curation on: <b id="myId">
+<script> 
+var date = new Date(); 
+var dd = date.getDate(); 
+var mm = date.getMonth() + 1; 
+var yyyy = date.getFullYear(); 
+var newDate = yyyy + "-" + mm + "-" +dd; 
+var p = document.getElementById("myId"); 
+p.innerHTML = newDate; 
+</script> </p>
 </body>
 </html>
