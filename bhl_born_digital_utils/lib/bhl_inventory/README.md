@@ -17,9 +17,9 @@ A tracking template used for born-digital transfers at the Bentley Historical Li
 - pass_1_successful (Y, N, N/A)
 - pass_1_date (YYYY-MM-DD)
 - pass_2_successful (Y, N, N/A)
-  - Used for the Ripstation workflow only
+  - If the second pass is unsuccessful separate the media. If further troubleshooting is needed please see the Archivist for Digital Curation.
 - pass_2_date (YYYY-MM-DD)
-  - Used for the Ripstation workflow only
+  - If the second pass is unsuccessful separate the media. If further troubleshooting is needed please see the Archivist for Digital Curation.
 - contains_virus (Y, N, N/A)
   - Run `System Center Endpoint Protection`
 - contains_pii (Y, N, N/A)
